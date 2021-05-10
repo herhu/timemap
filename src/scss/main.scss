@@ -14,4 +14,155 @@
 @import 'cover';
 @import 'stateoptions';
 
+h1,
+h2,
+h3 {
+  text-align: center;
+  color: #bed1cb;
+  letter-spacing: 0.2em;
+}
 
+.closeBtn {
+  font-size: 2.3em;
+  text-align: right;
+  cursor: pointer;
+}
+
+.center {
+  text-align: center;
+}
+
+.contador {
+  background-color: rgb(134, 34, 34);
+
+  animation: palpito 0.8s infinite;
+}
+
+@keyframes palpito {
+  0% {
+    background-color: rgba(134, 34, 34, 0.6);
+  }
+
+  50% {
+    background-color: rgba(134, 34, 34, 0.9);
+  }
+
+  100% {
+    background-color: rgba(134, 34, 34, 0.6);
+  }
+}
+
+p.rojo {
+  background-color: rgba(134, 34, 34, 0.6);
+  padding: 0.3em;
+  text-align: center;
+}
+
+.muertos {
+  color: rgba(255, 255, 255, 0.13);
+  position: absolute;
+  z-index: 9999;
+  pointer-events: none;
+  width: 100vw;
+  height: 100vh;
+
+  p {
+    margin: 0;
+    padding: 0;
+    font-size: 4em;
+    position: absolute;
+    display: inline-block;
+  }
+}
+
+.historiaInfo {
+  position: fixed;
+  height: calc(80vh - 54px);
+  left: 110px;
+  z-index: 9;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 3em;
+  overflow: auto;
+  margin-bottom: 4em;
+  line-height: 1.4;
+  letter-spacing: 1px;
+
+  h2 {
+    text-align: left;
+    font-size: 0.8em;
+  }
+
+  ul {
+    margin: 0;
+    padding: 0;
+
+    li {
+      display: inline-block;
+      font-size: 0.8em;
+      padding: 0 0.3em;
+    }
+  }
+
+  p {
+    font-size: 0.9em;
+  }
+}
+
+// Small devices (landscape phones, 576px and up)
+@media (min-width: 576px) {
+  .historiaInfo {
+    width: calc(90vw - 110px);
+
+    h3.resaltar {
+      font-size: 1em;
+    }
+
+    .highlight {
+      font-size: 1.1em;
+    }
+  }
+}
+
+// Medium devices (tablets, 768px and up)
+@media (min-width: 768px) {
+  .historiaInfo {
+    h3.resaltar {
+      font-size: 1.2em;
+    }
+
+    .highlight {
+      font-size: 1.5em;
+    }
+
+    p {
+      font-size: 1.1em;
+    }
+  }
+}
+
+// Large devices (desktops, 992px and up)
+@media (min-width: 992px) {
+  .historiaInfo {
+    width: 70vw;
+
+    h3.resaltar {
+      font-size: 1.6em;
+    }
+
+    .highlight {
+      font-size: 1.4em;
+    }
+  }
+}
+
+// Extra large devices (large desktops, 1200px and up)
+@media (min-width: 1200px) {
+  .historiaInfo {
+    width: 40vw;
+
+    .highlight {
+      font-size: 1.5em;
+    }
+  }
+}

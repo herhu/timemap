@@ -13,7 +13,7 @@ function updateDomain (domainState, action) {
 function markNotificationsRead (domainState, action) {
   return {
     ...domainState,
-    notifications: domainState.notifications.map(n => ({ ...n, isRead: true }))
+    notifications: domainState.notifications.map((n) => ({ ...n, isRead: true }))
   }
 }
 

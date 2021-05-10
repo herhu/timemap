@@ -1,6 +1,6 @@
 /**
-* Some handy helpers
-*/
+ * Some handy helpers
+ */
 
 /**
  * Given an event and a time range,
@@ -8,10 +8,7 @@
  */
 export function isTimeRangedIn (event, timeRange) {
   const eventTime = event.datetime
-  return (
-    timeRange[0] < eventTime &&
-    eventTime < timeRange[1]
-  )
+  return timeRange[0] < eventTime && eventTime < timeRange[1]
 }
 
 /**

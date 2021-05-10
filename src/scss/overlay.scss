@@ -1,5 +1,5 @@
 a {
-    color: $yellow !important;
+  color: $yellow !important;
 }
 
 .mo-overlay {
@@ -12,7 +12,7 @@ a {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0,0,0, 0.85);
+  background-color: rgba(0, 0, 0, 0.85);
   &.opaque {
     background-color: black;
   }
@@ -32,7 +32,7 @@ a {
   z-index: $overheader;
 }
 
-$overlay-bg: rgba(239,239,239,0.9);
+$overlay-bg: rgba(239, 239, 239, 0.9);
 
 .mo-banner {
   position: fixed;
@@ -124,7 +124,8 @@ $overlay-bg: rgba(239,239,239,0.9);
   align-items: center;
   margin-top: -50%;
 
-  .back, .next {
+  .back,
+  .next {
     position: fixed;
     bottom: 0;
     height: 170px;
@@ -132,7 +133,9 @@ $overlay-bg: rgba(239,239,239,0.9);
     color: $offwhite;
     cursor: pointer;
     box-shadow: 0 19px 19px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
-    svg path { fill: $offwhite; }
+    svg path {
+      fill: $offwhite;
+    }
     z-index: 1;
   }
 
@@ -150,12 +153,16 @@ $overlay-bg: rgba(239,239,239,0.9);
 
   .back {
     left: 10px;
-    svg path { transform: translate(17px,15px)rotate(-90deg)}
+    svg path {
+      transform: translate(17px, 15px) rotate(-90deg);
+    }
   }
   .next {
     margin-left: calc(100% - 60px);
     right: 10px;
-    svg path { transform: translate(17px,15px)rotate(90deg)}
+    svg path {
+      transform: translate(17px, 15px) rotate(90deg);
+    }
   }
 }
 
@@ -168,6 +175,7 @@ $overlay-bg: rgba(239,239,239,0.9);
   box-sizing: border-box;
   width: 100%;
   max-height: calc(#{$panel-height} - 100px);
+  font-family: 'Lato', Helvetica, sans-serif;
 
   .media-content {
     display: flex;
@@ -179,7 +187,6 @@ $overlay-bg: rgba(239,239,239,0.9);
     padding-top: 150px;
   }
 }
-
 
 .mo-footer {
   position: fixed;
@@ -194,7 +201,7 @@ $overlay-bg: rgba(239,239,239,0.9);
 
 .mo-meta-container {
   color: $overlay-bg;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
   border-radius: 2em;
   display: flex;
   flex-direction: column;
@@ -217,7 +224,8 @@ $overlay-bg: rgba(239,239,239,0.9);
     min-width: 800px;
     max-width: $panel-width;
     padding: $padding 0;
-    border-top: 1px solid rgb(189,189,189);
+    border-top: 1px solid rgb(189, 189, 189);
+    font-family: 'Lato', Helvetica, sans-serif;
     font-size: $normal;
 
     h4 {
@@ -247,7 +255,7 @@ $overlay-bg: rgba(239,239,239,0.9);
   }
 
   .indent {
-    margin-left: 2*$header-inset;
+    margin-left: 2 * $header-inset;
   }
 }
 
@@ -262,7 +270,6 @@ $overlay-bg: rgba(239,239,239,0.9);
 }
 
 .no-source-row {
-
   p {
     text-align: center;
     color: $midgrey;
@@ -289,6 +296,7 @@ $overlay-bg: rgba(239,239,239,0.9);
   box-sizing: border-box;
   padding: 0 calc(50% - 400px);
   overflow-y: scroll;
+  font-family: Helvetica, Georgia, serif;
   line-height: 1.5em;
   min-width: 100%;
   margin-bottom: 120px;
@@ -307,7 +315,8 @@ $overlay-bg: rgba(239,239,239,0.9);
   }
 }
 
-.source-image-container, .media-player {
+.source-image-container,
+.media-player {
   display: flex;
   justify-content: center;
   padding: 20px;
@@ -324,10 +333,16 @@ $overlay-bg: rgba(239,239,239,0.9);
   height: 100%;
   min-height: 100%;
   display: block;
+  // align-self: center;
+  // display: flex;
+  // flex-direction: column;
 }
 
-.source-image, .source-video {
+.source-image,
+.source-video {
   padding: 1px;
+  font-family: 'Lato', Helvetica, sans-serif;
+  // max-width: calc(#{$panel-width} - 100px);
   max-height: 100%;
   margin: auto;
   width: auto;

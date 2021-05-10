@@ -4,8 +4,7 @@ import { Portal } from 'react-portal'
 function MapShapes ({ svg, shapes, projectPoint, styles }) {
   function renderShape (shape) {
     const lineCoords = []
-    const points = shape.points
-      .map(projectPoint)
+    const points = shape.points.map(projectPoint)
 
     points.forEach((p1, idx) => {
       if (idx < shape.points.length - 1) {
@@ -19,19 +18,10 @@ function MapShapes ({ svg, shapes, projectPoint, styles }) {
       }
     })
 
-    return lineCoords.map(coords => {
-      const shapeStyles = (shape.name in styles)
-        ? styles[shape.name]
-        : styles.default
+    return lineCoords.map((coords) => {
+      const shapeStyles = shape.name in styles ? styles[shape.name] : styles.default
 
-      return (
-        <line
-          id={`${shape.name}_style`}
-          markerStart='none'
-          {...coords}
-          style={shapeStyles}
-        />
-      )
+      return <line id={`${shape.name}_style`} markerStart='none' {...coords} style={shapeStyles} />
     })
   }
 
@@ -39,7 +29,7 @@ function MapShapes ({ svg, shapes, projectPoint, styles }) {
 
   return (
     <Portal node={svg}>
-      <g id={`shapes-layer`} className='narrative'>
+      <g id='shapes-layer' className='narrative'>
         {shapes.map(renderShape)}
       </g>
     </Portal>

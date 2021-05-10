@@ -1,11 +1,11 @@
 // @import 'burger';
-// @import 'card';
+@import 'card';
 
 .card-stack {
   position: absolute;
-  top: $card-right;
+  top: 87px;
   right: $card-right;
-  max-height: calc(100% - 180px);
+  max-height: calc(100% - 345px);
   height: auto;
   width: $card-width;
   overflow-y: scroll;
@@ -27,6 +27,9 @@
   }
 
   .card-stack-header {
+    position: fixed;
+    top: 45px;
+    z-index: 999;
     min-height: 38px;
     line-height: 38px;
     width: $card-width;
@@ -70,8 +73,6 @@
   }
 
   .card-stack-content {
-    width: $card-width;
-
     ul {
       padding: 0;
       margin-top: 1px;

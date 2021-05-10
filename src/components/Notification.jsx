@@ -2,7 +2,7 @@ import React from 'react'
 
 export default class Notification extends React.Component {
   constructor (props) {
-    super()
+    super(props)
     this.state = {
       isExtended: false
     }
@@ -18,7 +18,7 @@ export default class Notification extends React.Component {
       <div>
         {items.map((item) => {
           if (item.error) {
-            return (<p>{item.error.message}</p>)
+            return <p>{item.error.message}</p>
           }
           return ''
         })}
@@ -27,43 +27,35 @@ export default class Notification extends React.Component {
   }
 
   renderNotificationContent (notification) {
-    let { type, message, items } = notification
+    const { type, message, items } = notification
 
     return (
       <div>
-        <div className={`message ${type}`}>
-          {message}
-        </div>
-        <div className={`details ${this.state.isExtended}`}>
-          {(items !== null) ? this.renderItems(items) : ''}
-        </div>
+        <div className={`message ${type}`}>{message}</div>
+        <div className={`details ${this.state.isExtended}`}>{items !== null ? this.renderItems(items) : ''}</div>
       </div>
     )
   }
 
   render () {
     if (!this.props.notifications) return null
-    const notificationsToRender = this.props.notifications.filter(n => !('isRead' in n && n.isRead))
+    const notificationsToRender = this.props.notifications.filter((n) => !('isRead' in n && n.isRead))
     if (notificationsToRender.length > 0) {
       return (
-        <div className={`notification-wrapper`}>
-          {this.props.notifications.map((notification) => {
+        <div className='notification-wrapper'>
+          {this.props.notifications.map((notification, idx) => {
             return (
-              <div className='notification' onClick={() => this.toggleDetails()}>
-                <button
-                  onClick={this.props.onToggle}
-                  className='side-menu-burg over-white is-active'
-                >
+              <div key={`notification-${idx}`} className='notification' onClick={() => this.toggleDetails()}>
+                <button onClick={this.props.onToggle} className='side-menu-burg over-white is-active'>
                   <span />
                 </button>
                 {this.renderNotificationContent(notification)}
               </div>
             )
-          })
-          }
+          })}
         </div>
       )
     }
-    return (<div />)
+    return <div />
   }
 }

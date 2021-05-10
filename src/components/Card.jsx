@@ -1,12 +1,12 @@
 import copy from '../common/data/copy.json'
 import React from 'react'
 
-import CardCustomField from './presentational/Card/CustomField'
-import CardTime from './presentational/Card/Time'
-import CardLocation from './presentational/Card/Location'
-import CardCaret from './presentational/Card/Caret'
-import CardSummary from './presentational/Card/Summary'
-import CardSource from './presentational/Card/Source'
+import CardCustomField from './presentational/Card/CustomField.jsx'
+import CardTime from './presentational/Card/Time.jsx'
+import CardLocation from './presentational/Card/Location.jsx'
+import CardCaret from './presentational/Card/Caret.jsx'
+import CardSummary from './presentational/Card/Summary.jsx'
+import CardSource from './presentational/Card/Source.jsx'
 import { makeNiceDate } from '../common/utilities'
 
 class Card extends React.Component {
@@ -39,6 +39,7 @@ class Card extends React.Component {
       <CardSummary
         language={this.props.language}
         description={this.props.event.description}
+        data={this.props.event}
         isOpen={this.state.isOpen}
       />
     )
@@ -48,8 +49,8 @@ class Card extends React.Component {
     return (
       <CardLocation
         language={this.props.language}
-        location={this.props.event.location}
-        isPrecise={(!this.props.event.type || this.props.event.type === 'Structure')}
+        data={this.props.event}
+        isPrecise={!this.props.event.type || this.props.event.type === 'Structure'}
       />
     )
   }
@@ -63,11 +64,11 @@ class Card extends React.Component {
     return (
       <div className='card-col'>
         <h4>{sourceLang}: </h4>
-        {this.props.event.sources.map(source => (
+        {this.props.event.sources.map((source) => (
           <CardSource
             isLoading={this.props.isLoading}
             source={source}
-            onClickHandler={source => this.props.onViewSource(source)}
+            onClickHandler={(source) => this.props.onViewSource(source)}
           />
         ))}
       </div>
@@ -76,7 +77,7 @@ class Card extends React.Component {
 
   // NB: should be internaionalized.
   renderTime () {
-    let timelabel = this.makeTimelabel(this.props.event.datetime)
+    const timelabel = this.makeTimelabel(this.props.event.datetime)
 
     // let precision = this.props.event.time_display
     // if (precision === '_date_only') {
@@ -91,23 +92,14 @@ class Card extends React.Component {
     //   timelabel = timelabel.substring(0, 11)
     // }
 
-    return (
-      <CardTime
-        makeTimelabel={timelabel}
-        language={this.props.language}
-        timelabel={timelabel}
-      />
-    )
+    return <CardTime makeTimelabel={timelabel} language={this.props.language} timelabel={timelabel} />
   }
 
   renderCustomFields () {
-    return this.props.features.CUSTOM_EVENT_FIELDS
-      .map(field => {
-        const value = this.props.event[field.key]
-        return value ? (
-          <CardCustomField field={field} value={this.props.event[field.key]} />
-        ) : null
-      })
+    return this.props.features.CUSTOM_EVENT_FIELDS.map((field) => {
+      const value = this.props.event[field.key]
+      return value ? <CardCustomField field={field} value={this.props.event[field.key]} /> : null
+    })
   }
 
   renderMain () {
@@ -124,19 +116,12 @@ class Card extends React.Component {
   }
 
   renderExtra () {
-    return (
-      <div className='card-bottomhalf'>
-        {this.renderSources()}
-      </div>
-    )
+    return <div className='card-bottomhalf'>{this.renderSources()}</div>
   }
 
   renderCaret () {
     return this.props.features.USE_SOURCES ? (
-      <CardCaret
-        toggle={() => this.toggle()}
-        isOpen={this.state.isOpen}
-      />
+      <CardCaret toggle={() => this.toggle()} isOpen={this.state.isOpen} />
     ) : null
   }
 

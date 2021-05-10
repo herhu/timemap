@@ -1,8 +1,6 @@
 import { mergeDeepLeft } from 'ramda'
-import global, { colors } from '../common/global'
-import generateCardLayout from '../common/card'
+import global from '../common/global'
 
-const isSmallLaptop = window.innerHeight < 800
 const initial = {
   /*
    * The Domain or 'domain' of this state refers to the tree of data
@@ -13,6 +11,7 @@ const initial = {
    */
   domain: {
     events: [],
+    locations: [],
     categories: [],
     associations: [],
     sources: {},
@@ -29,7 +28,6 @@ const initial = {
    *   or by the characteristics of the client, browser, etc.
    */
   app: {
-    debug: true,
     errors: {
       source: false
     },
@@ -37,7 +35,6 @@ const initial = {
     selected: [],
     source: null,
     associations: {
-      coloringSet: [],
       filters: [],
       narrative: null,
       categories: [],
@@ -48,42 +45,37 @@ const initial = {
       }
     },
     isMobile: /Mobi/.test(navigator.userAgent),
-    language: 'en-US',
+    language: 'es-MX',
     map: {
-      anchor: [31.356397, 34.784818],
+      anchor: [4.6445491, -74.0686627],
       startZoom: 11,
-      minZoom: 2,
-      maxZoom: 16,
+      minZoom: 6,
+      maxZoom: 18,
       bounds: null,
       maxBounds: [
         [180, -180],
         [-180, 180]
       ]
     },
-    cluster: {
-      radius: 30,
-      minZoom: 2,
-      maxZoom: 16
-    },
     timeline: {
       dimensions: {
-        height: isSmallLaptop ? 170 : 250,
+        height: 200,
         width: 0,
-        marginLeft: 70,
-        marginTop: isSmallLaptop ? 5 : 10, // the padding used for the day/month labels inside the timeline
+        marginLeft: 0,
+        marginTop: 15,
         marginBottom: 60,
-        contentHeight: isSmallLaptop ? 160 : 200,
-        width_controls: 100
+        contentHeight: 200,
+        width_controls: 80
       },
-      range: [new Date(2001, 2, 23, 12), new Date(2021, 2, 23, 12)],
-      rangeLimits: [new Date(1, 1, 1, 1), new Date()],
+      range: [new Date(2021, 3, 4, 11), new Date(2021, 5, 1, 9)],
+      // rangeLimits: [new Date(1, 1, 1, 1), new Date()],
       zoomLevels: [
-        { label: '20 years', duration: 10512000 },
-        { label: '2 years', duration: 1051200 },
-        { label: '3 months', duration: 129600 },
-        { label: '3 days', duration: 4320 },
-        { label: '12 hours', duration: 720 },
-        { label: '1 hour', duration: 60 }
+        { label: '20 años', duration: 10512000 },
+        { label: '2 años', duration: 1051200 },
+        { label: '3 meses', duration: 129600 },
+        { label: '3 días', duration: 4320 },
+        { label: '12 horas', duration: 720 },
+        { label: '1 hora', duration: 60 }
       ]
     },
     flags: {
@@ -92,7 +84,6 @@ const initial = {
       isCover: true,
       isCardstack: true,
       isInfopopup: false,
-      isIntropopup: false,
       isShowingSites: true
     },
     cover: {
@@ -113,7 +104,20 @@ const initial = {
     tiles: 'openstreetmap', // ['openstreetmap', 'streets', 'satellite']
     style: {
       categories: {
-        default: global.fallbackEventColor
+        default: global.fallbackEventColor,
+        // 'Disparo asociado a presencia de policía': '#99FF9E',
+        // 'Policía disparando': '#FF94A6',
+        // 'Disparo sin referencia de origen': '#97C9FF',
+        'Policía disparando': '#ffd199',
+        'Agresión policial': '#99FF9E',
+        'Policía armado': '#97C9FF',
+        Herido: '#FF94A6',
+        Muerto: '#de2c10',
+        Contexto: '#fff697',
+        Manifestantes: '#f6f5fa',
+        'Agresión a DDHH': '#cf99ff',
+        'Conducta sospechosa policía': '#86f7f2',
+        'Mal uso (armas, identificación)': '#97C9FF'
       },
       narratives: {
         default: {
@@ -128,17 +132,7 @@ const initial = {
           strokeWidth: 3,
           opacity: 0.9
         }
-      },
-      clusters: {
-        radial: false
       }
-    },
-    card: {
-      layout: ({ event }) => generateCardLayout['basic']({ event })
-    },
-    coloring: {
-      maxNumOfColors: 4,
-      colors: Object.values(colors)
     },
     dom: {
       timeline: 'timeline',
@@ -169,7 +163,5 @@ if (process.env.store) {
 // NB: config.js dates get implicitly converted to strings in mergeDeepLeft
 appStore.app.timeline.range[0] = new Date(appStore.app.timeline.range[0])
 appStore.app.timeline.range[1] = new Date(appStore.app.timeline.range[1])
-
-appStore.app.flags.isIntropopup = !!appStore.app.intro
 
 export default appStore

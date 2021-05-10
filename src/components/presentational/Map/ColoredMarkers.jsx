@@ -6,7 +6,7 @@ function ColoredMarkers ({ radius, colorPercentMap, styles, className }) {
   const colors = Object.keys(colorPercentMap)
 
   return (
-    <React.Fragment>
+    <>
       {colors.map((color, idx) => {
         const colorPercent = colorPercentMap[color]
 
@@ -22,7 +22,7 @@ function ColoredMarkers ({ radius, colorPercentMap, styles, className }) {
         const arc = [
           `M ${startX} ${startY}`, // Move
           `A ${radius} ${radius} 0 ${largeArcFlag} 1 ${endX} ${endY}`, // Arc
-          `L 0 0 `, // Line
+          'L 0 0 ', // Line
           `L ${startX} ${startY} Z` // Line
         ].join(' ')
 
@@ -40,7 +40,7 @@ function ColoredMarkers ({ radius, colorPercentMap, styles, className }) {
           />
         )
       })}
-    </React.Fragment>
+    </>
   )
 }
 

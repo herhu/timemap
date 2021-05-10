@@ -1,4 +1,4 @@
-FROM mhart/alpine-node:10.11
+FROM mhart/alpine-node:14
 
 LABEL authors="Lachlan Kermode <lk@forensic-architecture.org>"
 

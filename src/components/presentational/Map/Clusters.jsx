@@ -9,7 +9,8 @@ import {
   isLongitude,
   calculateColorPercentages,
   zipColorsToPercentages,
-  calculateTotalClusterPoints } from '../../../common/utilities'
+  calculateTotalClusterPoints
+} from '../../../common/utilities'
 
 const DefsClusters = () => (
   <defs>
@@ -48,7 +49,7 @@ function Cluster ({ cluster, size, projectPoint, totalPoints, styles, renderHove
 
   return (
     <g
-      className={'cluster-event'}
+      className='cluster-event'
       transform={`translate(${x}, ${y})`}
       onClick={e => onClick({ id: clusterId, latitude, longitude })}
       onMouseEnter={() => setHovered(true)}
@@ -60,7 +61,7 @@ function Cluster ({ cluster, size, projectPoint, totalPoints, styles, renderHove
         styles={{
           ...styles
         }}
-        className={'cluster-event-marker'}
+        className='cluster-event-marker'
       />
       {hovered ? renderHover(cluster) : null}
     </g>
@@ -87,17 +88,19 @@ function ClusterEvents ({
   }
 
   function renderHover (txt, circleSize) {
-    return <>
-      <text text-anchor='middle' y='3px' style={{ fontWeight: 'bold', fill: 'black', zIndex: 10000 }}>{txt}</text>
-      <circle
-        class='event-hover'
-        cx='0'
-        cy='0'
-        r={circleSize + 2}
-        stroke={colors.primaryHighlight}
-        fill-opacity='0.0'
-      />
-    </>
+    return (
+      <>
+        <text text-anchor='middle' y='3px' style={{ fontWeight: 'bold', fill: 'black', zIndex: 10000 }}>{txt}</text>
+        <circle
+          class='event-hover'
+          cx='0'
+          cy='0'
+          r={circleSize + 2}
+          stroke={colors.primaryHighlight}
+          fill-opacity='0.0'
+        />
+      </>
+    )
   }
 
   return (
@@ -107,21 +110,23 @@ function ClusterEvents ({
         {clusters.map(c => {
           const pointCount = c.properties.point_count
           const clusterSize = calcClusterSize(pointCount, totalPoints)
-          return <Cluster
-            onClick={onSelect}
-            getClusterChildren={getClusterChildren}
-            coloringSet={coloringSet}
-            cluster={c}
-            filterColors={filterColors}
-            size={clusterSize}
-            projectPoint={projectPoint}
-            totalPoints={totalPoints}
-            styles={{
-              ...styles,
-              fillOpacity: calcClusterOpacity(pointCount, totalPoints)
-            }}
-            renderHover={() => renderHover(pointCount, clusterSize)}
-          />
+          return (
+            <Cluster
+              onClick={onSelect}
+              getClusterChildren={getClusterChildren}
+              coloringSet={coloringSet}
+              cluster={c}
+              filterColors={filterColors}
+              size={clusterSize}
+              projectPoint={projectPoint}
+              totalPoints={totalPoints}
+              styles={{
+                ...styles,
+                fillOpacity: calcClusterOpacity(pointCount, totalPoints)
+              }}
+              renderHover={() => renderHover(pointCount, clusterSize)}
+            />
+          )
         })}
       </g>
     </Portal>

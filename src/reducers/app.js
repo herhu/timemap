@@ -1,13 +1,11 @@
 import initial from '../store/initial.js'
-import { ASSOCIATION_MODES } from '../common/constants'
 import { toggleFlagAC } from '../common/utilities'
 
 import {
   UPDATE_HIGHLIGHTED,
   UPDATE_SELECTED,
-  UPDATE_COLORING_SET,
   CLEAR_FILTER,
-  TOGGLE_ASSOCIATIONS,
+  TOGGLE_FILTER,
   UPDATE_TIMERANGE,
   UPDATE_DIMENSIONS,
   UPDATE_NARRATIVE,
@@ -18,14 +16,12 @@ import {
   TOGGLE_FETCHING_DOMAIN,
   TOGGLE_FETCHING_SOURCES,
   TOGGLE_INFOPOPUP,
-  TOGGLE_INTROPOPUP,
   TOGGLE_NOTIFICATIONS,
   TOGGLE_COVER,
   FETCH_ERROR,
   FETCH_SOURCE_ERROR,
   SET_LOADING,
   SET_NOT_LOADING,
-  SET_INITIAL_CATEGORIES,
   UPDATE_SEARCH_QUERY
 } from '../actions'
 
@@ -41,22 +37,12 @@ function updateSelected (appState, action) {
   })
 }
 
-function updateColoringSet (appState, action) {
-  return {
-    ...appState,
-    associations: {
-      ...appState.associations,
-      coloringSet: action.coloringSet
-    }
-  }
-}
-
 function updateNarrative (appState, action) {
   let minTime = appState.timeline.range[0]
   let maxTime = appState.timeline.range[1]
 
-  let cornerBound0 = [180, 180]
-  let cornerBound1 = [-180, -180]
+  const cornerBound0 = [180, 180]
+  const cornerBound1 = [-180, -180]
 
   // Compute narrative time range and map bounds
   if (action.narrative) {
@@ -65,7 +51,7 @@ function updateNarrative (appState, action) {
     maxTime = appState.timeline.rangeLimits[1]
 
     // Find max and mins coordinates of narrative events
-    action.narrative.steps.forEach(step => {
+    action.narrative.steps.forEach((step) => {
       const stepTime = step.datetime
       if (stepTime < minTime) minTime = stepTime
       if (stepTime > maxTime) maxTime = stepTime
@@ -105,7 +91,7 @@ function updateNarrative (appState, action) {
     },
     map: {
       ...appState.map,
-      bounds: (action.narrative) ? [cornerBound0, cornerBound1] : null
+      bounds: action.narrative ? [cornerBound0, cornerBound1] : null
     },
     timeline: {
       ...appState.timeline,
@@ -123,18 +109,17 @@ function updateNarrativeStepIdx (appState, action) {
   }
 }
 
-function toggleAssociations (appState, action) {
+function toggleFilter (appState, action) {
   if (!(action.value instanceof Array)) {
     action.value = [action.value]
   }
-  const { association: associationType } = action
 
-  let newAssociations = appState.associations[associationType].slice(0)
-  action.value.forEach(vl => {
-    if (newAssociations.includes(vl)) {
-      newAssociations = newAssociations.filter(s => s !== vl)
+  let newFilters = appState.associations.filters.slice(0)
+  action.value.forEach((vl) => {
+    if (newFilters.includes(vl)) {
+      newFilters = newFilters.filter((s) => s !== vl)
     } else {
-      newAssociations.push(vl)
+      newFilters.push(vl)
     }
   })
 
@@ -142,7 +127,7 @@ function toggleAssociations (appState, action) {
     ...appState,
     associations: {
       ...appState.associations,
-      [associationType]: newAssociations
+      filters: newFilters
     }
   }
 }
@@ -157,7 +142,8 @@ function clearFilter (appState, action) {
   }
 }
 
-function updateTimeRange (appState, action) { // XXX
+function updateTimeRange (appState, action) {
+  // XXX
   return {
     ...appState,
     timeline: {
@@ -181,7 +167,7 @@ function updateDimensions (appState, action) {
 }
 
 function toggleLanguage (appState, action) {
-  let otherLanguage = (appState.language === 'es-MX') ? 'en-US' : 'es-MX'
+  const otherLanguage = appState.language === 'es-MX' ? 'en-US' : 'es-MX'
   return Object.assign({}, appState, {
     language: action.language || otherLanguage
   })
@@ -206,7 +192,6 @@ const toggleSites = toggleFlagAC('isShowingSites')
 const toggleFetchingDomain = toggleFlagAC('isFetchingDomain')
 const toggleFetchingSources = toggleFlagAC('isFetchingSources')
 const toggleInfoPopup = toggleFlagAC('isInfopopup')
-const toggleIntroPopup = toggleFlagAC('isIntropopup')
 const toggleNotifications = toggleFlagAC('isNotification')
 const toggleCover = toggleFlagAC('isCover')
 
@@ -234,21 +219,6 @@ function setNotLoading (appState) {
   }
 }
 
-function setInitialCategories (appState, action) {
-  const categories = action.values.reduce((acc, val) => {
-    if (val.mode === ASSOCIATION_MODES.CATEGORY) acc.push(val.id)
-    return acc
-  }, [])
-
-  return {
-    ...appState,
-    associations: {
-      ...appState.associations,
-      categories: categories
-    }
-  }
-}
-
 function updateSearchQuery (appState, action) {
   return {
     ...appState,
@@ -262,12 +232,10 @@ function app (appState = initial.app, action) {
       return updateHighlighted(appState, action)
     case UPDATE_SELECTED:
       return updateSelected(appState, action)
-    case UPDATE_COLORING_SET:
-      return updateColoringSet(appState, action)
     case CLEAR_FILTER:
       return clearFilter(appState, action)
-    case TOGGLE_ASSOCIATIONS:
-      return toggleAssociations(appState, action)
+    case TOGGLE_FILTER:
+      return toggleFilter(appState, action)
     case UPDATE_TIMERANGE:
       return updateTimeRange(appState, action)
     case UPDATE_DIMENSIONS:
@@ -289,8 +257,6 @@ function app (appState = initial.app, action) {
       return toggleFetchingSources(appState)
     case TOGGLE_INFOPOPUP:
       return toggleInfoPopup(appState)
-    case TOGGLE_INTROPOPUP:
-      return toggleIntroPopup(appState)
     case TOGGLE_NOTIFICATIONS:
       return toggleNotifications(appState)
     case TOGGLE_COVER:
@@ -304,8 +270,6 @@ function app (appState = initial.app, action) {
       return setLoading(appState)
     case SET_NOT_LOADING:
       return setNotLoading(appState)
-    case SET_INITIAL_CATEGORIES:
-      return setInitialCategories(appState, action)
     case UPDATE_SEARCH_QUERY:
       return updateSearchQuery(appState, action)
     default:

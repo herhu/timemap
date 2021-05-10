@@ -1,6 +1,9 @@
 import Joi from 'joi'
 
 import createEventSchema from './eventSchema'
+import placeSchema from './placeSchema'
+import categorySchema from './categorySchema'
+import victimaSchema from './victimaSchema'
 import siteSchema from './siteSchema'
 import associationsSchema from './associationsSchema'
 import sourceSchema from './sourceSchema'
@@ -31,11 +34,7 @@ function findDuplicateAssociations (associations) {
     if (seenSet.has(item.id)) {
       duplicates.push({
         id: item.id,
-        error: makeError(
-          'Association',
-          item.id,
-          'association was found more than once. Ignoring duplicate.'
-        )
+        error: makeError('Association', item.id, 'association was found more than once. Ignoring duplicate.')
       })
     } else {
       seenSet.add(item.id)
@@ -50,10 +49,13 @@ function findDuplicateAssociations (associations) {
 export function validateDomain (domain, features) {
   const sanitizedDomain = {
     events: [],
-    sites: [],
+    cais: [],
+    categories: [],
+    victimas: [],
+    // sites: [],
     associations: [],
-    sources: {},
-    shapes: [],
+    // sources: {},
+    // shapes: [],
     notifications: domain ? domain.notifications : null
   }
 
@@ -63,22 +65,22 @@ export function validateDomain (domain, features) {
 
   const discardedDomain = {
     events: [],
-    sites: [],
-    associations: [],
-    sources: [],
-    shapes: []
+    cais: [],
+    categories: [],
+    victimas: []
   }
 
   function validateArrayItem (item, domainKey, schema) {
-    const result = Joi.validate(item, schema)
-    if (result.error !== null) {
+    const { error, value } = schema.validate(item)
+
+    if (error) {
       const id = item.id || '-'
       const domainStr = capitalize(domainKey)
-      const error = makeError(domainStr, id, result.error.message)
+      const err = makeError(domainStr, id, error.message)
 
-      discardedDomain[domainKey].push(Object.assign(item, { error }))
+      discardedDomain[domainKey].push(Object.assign(item, { err }))
     } else {
-      sanitizedDomain[domainKey].push(item)
+      sanitizedDomain[domainKey].push(value)
     }
   }
 
@@ -109,50 +111,85 @@ export function validateDomain (domain, features) {
     features.CUSTOM_EVENT_FIELDS = []
   }
 
+  // domain.victimas
+  //   .filter((v) => v.latitude && v.longitude)
+  //   .forEach((v) => {
+  //     const ret = {
+  //       id: v.id,
+  //       location: v.lugar,
+  //       category: 'Muerto',
+  //       date: v.fecha,
+  //       description: v.descripcion,
+  //       fuente: v.fuente,
+  //       nombre: v.nombre,
+  //     };
+
+  //     if (v.latitude) ret.latitude = v.latitude;
+  //     if (v.longitude) ret.longitude = v.longitude;
+  //     domain.eventos.push(ret);
+  //   });
+
+  domain.eventos.forEach((evento) => {
+    const match = domain.cais.find((cai) => cai.name === evento.location)
+
+    if (match) evento.location = `${evento.location} (${match.localidad})`
+  })
+
   const eventSchema = createEventSchema(features.CUSTOM_EVENT_FIELDS)
-  validateArray(domain.events, 'events', eventSchema)
-  validateArray(domain.sites, 'sites', siteSchema)
-  validateArray(domain.associations, 'associations', associationsSchema)
-  validateObject(domain.sources, 'sources', sourceSchema)
-  validateObject(domain.shapes, 'shapes', shapeSchema)
+  validateArray(domain.eventos, 'events', eventSchema)
+  validateArray(domain.cais, 'cais', placeSchema)
+  // validateArray(domain.filters, 'filters', Joi.string());
+  validateArray(domain.categories, 'categories', categorySchema)
+  // validateArray(domain.sites, 'sites', siteSchema);
+  // validateArray(domain.associations, 'associations', associationsSchema);
+  // validateObject(domain.sources, 'sources', sourceSchema);
+  // validateObject(domain.shapes, 'shapes', shapeSchema);
 
   // NB: [lat, lon] array is best format for projecting into map
-  sanitizedDomain.shapes = sanitizedDomain.shapes.map((shape) => ({
-    name: shape.name,
-    points: shape.items.map((coords) => coords.replace(/\s/g, '').split(','))
-  }))
+  // sanitizedDomain.shapes = sanitizedDomain.shapes.map((shape) => ({
+  //   name: shape.name,
+  //   points: shape.items.map((coords) => coords.replace(/\s/g, '').split(',')),
+  // }));
 
-  const duplicateAssociations = findDuplicateAssociations(domain.associations)
-  // Duplicated associations
-  if (duplicateAssociations.length > 0) {
-    sanitizedDomain.notifications.push({
-      message: `Associations are required to be unique. Ignoring duplicates for now.`,
-      items: duplicateAssociations,
-      type: 'error'
-    })
-  }
-  sanitizedDomain.associations = domain.associations
+  // const duplicateAssociations = findDuplicateAssociations(domain.associations);
+  // // Duplicated associations
+  // if (duplicateAssociations.length > 0) {
+  //   sanitizedDomain.notifications.push({
+  //     message: `Associations are required to be unique. Ignoring duplicates for now.`,
+  //     items: duplicateAssociations,
+  //     type: 'error',
+  //   });
+  // }
+  // sanitizedDomain.associations = domain.associations;
 
   // append events with datetime and sort
+
+  const categoriasUsadas = []
   sanitizedDomain.events = sanitizedDomain.events.filter((event, idx) => {
+    if (!categoriasUsadas.includes(event.category)) categoriasUsadas.push(event.category)
+
     event.id = idx
     event.datetime = calcDatetime(event.date, event.time)
     if (!isValidDate(event.datetime)) {
-      discardedDomain['events'].push({
+      discardedDomain.events.push({
         ...event,
         error: makeError(
-          'events',
+          'event',
           event.id,
-          `Invalid date. It's been dropped, as otherwise timemap won't work as expected.`
+          'Invalid date. It\'s been dropped, as otherwise timemap won\'t work as expected.'
         )
       })
       return false
     }
+
     return true
   })
 
-  sanitizedDomain.events.sort((a, b) => a.datetime - b.datetime)
+  sanitizedDomain.categories = sanitizedDomain.categories.filter(({ category }) => {
+    return categoriasUsadas.includes(category)
+  })
 
+  sanitizedDomain.events.sort((a, b) => a.datetime - b.datetime)
   // Message the number of failed items in domain
   Object.keys(discardedDomain).forEach((disc) => {
     const len = discardedDomain[disc].length
