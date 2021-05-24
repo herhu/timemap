@@ -107,17 +107,17 @@ const initial = {
         default: global.fallbackEventColor,
         // 'Disparo asociado a presencia de policía': '#99FF9E',
         // 'Policía disparando': '#FF94A6',
-        // 'Disparo sin referencia de origen': '#97C9FF',
-        'Policía disparando arma de fuego': '#ffd199',
-        'Disparos en presencia de policía': '#2b8030',
+        'Disparo sin referencia de origen': '#0378A6',
+        //'Policía disparando arma de fuego': '#2703A6',
+        'Disparos en presencia de policía': '#007336',
         'Policía armado': '#97C9FF',
-        Herido: '#f08843',
-        Muerto: '#de2c10',
+        Herido: '#F25C05',
+        Muerto: '#ff2134',
         Contexto: '#fff697',
-        'Otras agresiones': '#f6f5fa',
-        'Otras agresiones': '#774ba3',
+        'Otras agresiones': '#F2B035',
+        //'Otras agresiones': '#774ba3',
         'Conducta sospechosa policía': '#86f7f2',
-        'Policía disparando arma de fuego': '#3987db'
+        'Policía disparando arma de fuego': '#78548a'
       },
       narratives: {
         default: {
