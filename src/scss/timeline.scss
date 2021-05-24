@@ -179,12 +179,11 @@ $timeline-height: 170px;
           stroke: white; // $midwhite;
           cursor: -webkit-grab;
           cursor: -moz-grab;
-          position: block;
-          left: 100px;
+          // left: 100px;
         }
 
         .tick text {
-          font-size: 10px;
+          font-size: 12px;
           font-family: 'Lato';
           transform: translate(10px, 0px);
           // text-anchor: end;

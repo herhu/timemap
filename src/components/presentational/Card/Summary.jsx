@@ -79,15 +79,34 @@ const getSource = (source) => {
   return null
 }
 
-const CardSummary = ({ language, data }) => {
+const CardSummary = ({ language, data, categoryColor }) => {
   const summary = copy[language].cardstack.description
   const nombre = getVictimName(data.nombre_victima)
   const fuente = getSource(data.fuente)
+  const filters = data.filters.map((filter, idx) => {
+    return (
+      <span key={`filter-${idx}`} className='category-filter'>
+        {filter}
+      </span>
+    )
+  })
 
   return (
     <div className='card-row summary'>
       <div className='card-cell'>
-        <p className='card-categoria'>{`Categoría: ${data.category}`}</p>
+        <p
+          className='card-categoria'
+          style={{
+            backgroundColor: categoryColor,
+            color: 'white',
+            display: 'inline-block',
+            padding: '.3em',
+            margin: '.3em 0'
+          }}
+        >
+          {data.category}
+        </p>
+        {filters}
         {nombre}
         <h4>{summary}</h4>
         <p>{data.description}</p>

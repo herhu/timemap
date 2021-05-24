@@ -49,7 +49,7 @@ class TimelineCategories extends Component {
           <line x1={dims.marginLeft + 150} x2={dims.width - dims.width_controls} />
         </g>
         <g className='tick' opacity='1' transform={`translate(0,${this.props.getCategoryY(category)})`}>
-          <text x={dims.marginLeft - 5} dy='0.32em' fill={color}>
+          <text x={dims.marginLeft - 5} dy='0.32em' fill='#f5f5f5'>
             {category}
           </text>
         </g>

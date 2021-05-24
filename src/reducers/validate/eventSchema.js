@@ -24,7 +24,8 @@ function createEventSchema (custom) {
     fuente: Joi.string().allow(''),
     nombre: Joi.string().optional(),
     nombre_victima: Joi.string().optional().allow(''),
-    ubicacion: Joi.string().optional().allow('')
+    ubicacion: Joi.string().optional().allow(''),
+    filters: Joi.array().items(Joi.string())
   })
   // return Joi.object()
   //   .keys({

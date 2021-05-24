@@ -37,6 +37,7 @@ class Card extends React.Component {
   renderSummary () {
     return (
       <CardSummary
+        categoryColor={this.props.getCategoryColor(this.props.event.category)}
         language={this.props.language}
         description={this.props.event.description}
         data={this.props.event}

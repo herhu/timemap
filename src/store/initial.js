@@ -108,16 +108,16 @@ const initial = {
         // 'Disparo asociado a presencia de policía': '#99FF9E',
         // 'Policía disparando': '#FF94A6',
         // 'Disparo sin referencia de origen': '#97C9FF',
-        'Policía disparando': '#ffd199',
-        'Agresión policial': '#99FF9E',
+        'Policía disparando arma de fuego': '#ffd199',
+        'Disparos en presencia de policía': '#2b8030',
         'Policía armado': '#97C9FF',
-        Herido: '#FF94A6',
+        Herido: '#f08843',
         Muerto: '#de2c10',
         Contexto: '#fff697',
-        Manifestantes: '#f6f5fa',
-        'Agresión a DDHH': '#cf99ff',
+        'Otras agresiones': '#f6f5fa',
+        'Otras agresiones': '#774ba3',
         'Conducta sospechosa policía': '#86f7f2',
-        'Mal uso (armas, identificación)': '#97C9FF'
+        'Policía disparando arma de fuego': '#3987db'
       },
       narratives: {
         default: {
