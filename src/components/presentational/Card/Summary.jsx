@@ -21,6 +21,17 @@ const getVideos = (videos) => {
   }
 }
 
+const getImages = (imgs) => {
+  if (imgs && imgs.length) {
+    return imgs.map((fileName, i) => {
+      return (
+        <img key={fileName} className='img' width='550' height='380'
+          source src={`./imgs/${fileName}.jpg`}/>
+      )
+    })
+  }
+}
+
 const getVictimName = (nombre) => {
   if (nombre) {
     return (
@@ -111,6 +122,7 @@ const CardSummary = ({ language, data, categoryColor }) => {
         <h4>{summary}</h4>
         <p>{data.description}</p>
         {getVideos(data.videos)}
+        {getImages(data.imgs)}
         {fuente}
       </div>
     </div>

@@ -1,16 +1,16 @@
-import Joi from 'joi'
+import Joi from 'joi';
 
-function joiFromCustom (custom) {
-  const output = {}
+function joiFromCustom(custom) {
+  const output = {};
   custom.forEach((field) => {
     if (field.kind === 'text' || field.kind === 'link') {
-      output[field.key] = Joi.string().allow('')
+      output[field.key] = Joi.string().allow('');
     }
-  })
-  return output
+  });
+  return output;
 }
 
-function createEventSchema (custom) {
+function createEventSchema(custom) {
   return Joi.object().keys({
     id: Joi.string().allow(''),
     location: Joi.string().allow(''),
@@ -21,12 +21,13 @@ function createEventSchema (custom) {
     date: Joi.string().allow(''),
     description: Joi.string().allow(''),
     videos: Joi.array().items(Joi.string()).optional(),
+    imgs: Joi.array().items(Joi.string()).optional(),
     fuente: Joi.string().allow(''),
     nombre: Joi.string().optional(),
     nombre_victima: Joi.string().optional().allow(''),
     ubicacion: Joi.string().optional().allow(''),
-    filters: Joi.array().items(Joi.string())
-  })
+    filters: Joi.array().items(Joi.string()),
+  });
   // return Joi.object()
   //   .keys({
   //     id: Joi.string().allow(''),
@@ -54,4 +55,4 @@ function createEventSchema (custom) {
   //   .or('date', 'latitude');
 }
 
-export default createEventSchema
+export default createEventSchema;
