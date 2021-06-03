@@ -1,4 +1,4 @@
-import Joi from 'joi'
+import Joi from 'joi';
 
 export default Joi.object().keys({
   id: Joi.string(),
@@ -7,5 +7,5 @@ export default Joi.object().keys({
   descripcion: Joi.string(),
   fuente: Joi.string().allow(''),
   latitude: Joi.string().optional(),
-  longitude: Joi.string().optional()
-})
+  longitude: Joi.string().optional(),
+});

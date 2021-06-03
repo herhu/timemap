@@ -1,15 +1,15 @@
 /* global L */
-import React, { Component, createRef } from 'react'
-import { connect } from 'react-redux'
-import * as selectors from '../selectors'
-import hash from 'object-hash'
-import mapboxgl from 'mapbox-gl'
+import React, { Component, createRef } from 'react';
+import { connect } from 'react-redux';
+import * as selectors from '../selectors';
+import hash from 'object-hash';
+import mapboxgl from 'mapbox-gl';
 
 class Map extends Component {
-  constructor () {
-    super()
-    this.svgRef = createRef()
-    this.map = null
+  constructor() {
+    super();
+    this.svgRef = createRef();
+    this.map = null;
     this.state = {
       eventosCargados: false,
       puntosCargados: false,
@@ -17,56 +17,56 @@ class Map extends Component {
       estiloCargado: false,
       mapaCargado: false,
       mapTransformX: 0,
-      mapTransformY: 0
-    }
+      mapTransformY: 0,
+    };
   }
 
-  componentDidMount () {
+  componentDidMount() {
     if (this.map === null) {
-      mapboxgl.accessToken = process.env.MAPBOX_TOKEN
+      mapboxgl.accessToken = process.env.MAPBOX_TOKEN;
 
       const map = new mapboxgl.Map({
         container: this.props.ui.dom.map,
         style: this.props.propiedadesMapa.styleUrl,
         center: this.props.propiedadesMapa.anchor,
-        zoom: this.props.propiedadesMapa.startZoom
-      })
+        zoom: this.props.propiedadesMapa.startZoom,
+      });
 
       map.on('load', () => {
         this.setState({
-          mapaCargado: true
-        })
+          mapaCargado: true,
+        });
 
-        map.resize()
-      })
+        map.resize();
+      });
 
       map.on('sourcedata', (e) => {
         if (e.isSourceLoaded && !this.state.estiloCargado) {
           this.setState({
-            estiloCargado: true
-          })
+            estiloCargado: true,
+          });
         }
-      })
+      });
 
-      this.map = map
+      this.map = map;
     }
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     /**
      * Aún no lo estamos usando pero acá hay un boceto de como cambiar el mapa y puntos de vista cuando cambiamos de historia
      */
     if (prevProps.historiaActual !== this.props.historiaActual) {
       this.setState({
-        puntosCargados: false
-      })
-      this.map.setStyle(this.props.propiedadesMapa.styleUrl)
+        puntosCargados: false,
+      });
+      this.map.setStyle(this.props.propiedadesMapa.styleUrl);
 
       this.map.flyTo({
         center: this.props.propiedadesMapa.anchor,
         speed: 0.7,
-        zoom: this.props.propiedadesMapa.startZoom
-      })
+        zoom: this.props.propiedadesMapa.startZoom,
+      });
     }
 
     /**
@@ -74,31 +74,31 @@ class Map extends Component {
      */
     if (!this.state.eventosCargados && this.props.domain && this.props.domain.events.length) {
       this.setState({
-        eventosCargados: true
-      })
+        eventosCargados: true,
+      });
     }
 
     if (!this.state.categoriasCargadas && this.props.domain && this.props.domain.categories.length) {
       this.setState({
-        categoriasCargadas: true
-      })
+        categoriasCargadas: true,
+      });
     }
     if (this.state.puntosCargados && this.props.app && this.props.app.map) {
       // Set appropriate zoom for narrative
-      const { bounds } = this.props.app.map
+      const { bounds } = this.props.app.map;
 
       if (hash(bounds) !== hash(prevProps.app.map.bounds) && bounds !== null) {
-        this.map.fitBounds(bounds)
+        this.map.fitBounds(bounds);
       } else {
         if (hash(this.props.app.selected) !== hash(prevProps.app.selected)) {
           // Fly to first  of events selected
-          const eventPoint = this.props.app.selected.length > 0 ? this.props.app.selected[0] : null
+          const eventPoint = this.props.app.selected.length > 0 ? this.props.app.selected[0] : null;
 
           if (eventPoint !== null && eventPoint.latitude && eventPoint.longitude) {
             this.map.flyTo({
               center: [eventPoint.longitude, eventPoint.latitude],
-              zoom: 18
-            })
+              zoom: 18,
+            });
           }
         }
       }
@@ -111,42 +111,42 @@ class Map extends Component {
       this.state.estiloCargado &&
       this.state.mapaCargado
     ) {
-      this.agregarDatosEventos()
+      this.agregarDatosEventos();
     }
   }
 
-  agregarDatosEventos () {
+  agregarDatosEventos() {
     if (!this.state.eventosCargados && !this.state.categoriasCargadas) {
-      return
+      return;
     }
     /**
      * Definir los modos de clasificación: por categorias en este caso
      */
-    const metodos = {}
-    const comparacion = ['case']
-    const acumulacion = {}
+    const metodos = {};
+    const comparacion = ['case'];
+    const acumulacion = {};
 
     this.props.domain.categories.forEach(({ category }, i) => {
-      const expresion = ['==', ['get', 'category'], category]
-      metodos[category] = expresion
-      comparacion.push(expresion, this.props.methods.getCategoryColor(category))
-      acumulacion[category] = ['+', ['case', expresion, 1, 0]]
-    })
-    comparacion.push('#CCC')
+      const expresion = ['==', ['get', 'category'], category];
+      metodos[category] = expresion;
+      comparacion.push(expresion, this.props.methods.getCategoryColor(category));
+      acumulacion[category] = ['+', ['case', expresion, 1, 0]];
+    });
+    comparacion.push('#CCC');
 
     const data = this.props.domain.events.map((d, idx) => {
       return {
         type: 'Feature',
         properties: {
           category: d.category,
-          idx: idx
+          idx: idx,
         },
         geometry: {
           type: 'Point',
-          coordinates: [+d.longitude, +d.latitude]
-        }
-      }
-    })
+          coordinates: [+d.longitude, +d.latitude],
+        },
+      };
+    });
 
     this.map.addSource('puntosEventos', {
       type: 'geojson',
@@ -154,10 +154,10 @@ class Map extends Component {
       clusterRadius: 80,
       data: {
         type: 'FeatureCollection',
-        features: data
+        features: data,
       },
-      clusterProperties: acumulacion
-    })
+      clusterProperties: acumulacion,
+    });
 
     this.map.addLayer({
       id: 'unclustered-point',
@@ -166,165 +166,165 @@ class Map extends Component {
       filter: ['!', ['has', 'point_count']],
       paint: {
         'circle-color': comparacion,
-        'circle-radius': this.props.ui.eventRadius
-      }
-    })
+        'circle-radius': this.props.ui.eventRadius,
+      },
+    });
 
     this.map.on('click', 'unclustered-point', (e) => {
-      const features = this.map.queryRenderedFeatures(e.point)
+      const features = this.map.queryRenderedFeatures(e.point);
 
       if (features.length >= 1) {
-        const { idx } = features[0].properties
-        this.props.methods.onSelect(this.props.domain.events[idx])
+        const { idx } = features[0].properties;
+        this.props.methods.onSelect(this.props.domain.events[idx]);
       }
-    })
+    });
 
     this.map.on('mouseenter', 'unclustered-point', () => {
-      this.map.getCanvas().style.cursor = 'crosshair'
-    })
+      this.map.getCanvas().style.cursor = 'crosshair';
+    });
 
     this.map.on('mouseleave', 'unclustered-point', () => {
-      this.map.getCanvas().style.cursor = ''
-    })
+      this.map.getCanvas().style.cursor = '';
+    });
 
     // objects for caching and keeping track of HTML marker objects (for performance)
-    const markers = {}
-    let markersOnScreen = {}
+    const markers = {};
+    let markersOnScreen = {};
 
     const updateMarkers = () => {
-      const newMarkers = {}
-      const features = this.map.querySourceFeatures('puntosEventos')
+      const newMarkers = {};
+      const features = this.map.querySourceFeatures('puntosEventos');
 
       // for every cluster on the screen, create an HTML marker for it (if we didn't yet),
       // and add it to the map if it's not there already
       for (let i = 0; i < features.length; i++) {
-        const coords = features[i].geometry.coordinates
-        const props = features[i].properties
-        if (!props.cluster) continue
-        const id = props.cluster_id
-        let marker = markers[id]
+        const coords = features[i].geometry.coordinates;
+        const props = features[i].properties;
+        if (!props.cluster) continue;
+        const id = props.cluster_id;
+        let marker = markers[id];
 
         if (!marker) {
-          const el = createDonutChart(props)
-          el.style.cursor = 'zoom-in'
+          const el = createDonutChart(props);
+          el.style.cursor = 'zoom-in';
 
           el.onclick = () => {
             this.map.getSource('puntosEventos').getClusterLeaves(id, props.point_count, 0, (err, aFeatures) => {
-              if (err) return
+              if (err) return;
               const eventosEnCluster = aFeatures.map(({ properties }) => {
-                return this.props.domain.events[properties.idx]
-              })
-              this.props.methods.onSelect(eventosEnCluster)
-            })
+                return this.props.domain.events[properties.idx];
+              });
+              this.props.methods.onSelect(eventosEnCluster);
+            });
 
             this.map.getSource('puntosEventos').getClusterExpansionZoom(id, (err, zoom) => {
-              if (err) return
+              if (err) return;
               this.map.easeTo({
                 center: coords,
-                zoom: zoom
-              })
-            })
-          }
+                zoom: zoom,
+              });
+            });
+          };
           //
 
           marker = markers[id] = new mapboxgl.Marker({
-            element: el
-          }).setLngLat(coords)
+            element: el,
+          }).setLngLat(coords);
         }
-        newMarkers[id] = marker
+        newMarkers[id] = marker;
 
-        if (!markersOnScreen[id]) marker.addTo(this.map)
+        if (!markersOnScreen[id]) marker.addTo(this.map);
       }
       // for every marker we've added previously, remove those that are no longer visible
       for (const id in markersOnScreen) {
-        if (!newMarkers[id]) markersOnScreen[id].remove()
+        if (!newMarkers[id]) markersOnScreen[id].remove();
       }
-      markersOnScreen = newMarkers
-    }
+      markersOnScreen = newMarkers;
+    };
 
     // after the GeoJSON data is loaded, update markers on the screen on every frame
     this.map.on('render', () => {
-      if (!this.map.isSourceLoaded('puntosEventos')) return
-      updateMarkers()
-    })
+      if (!this.map.isSourceLoaded('puntosEventos')) return;
+      updateMarkers();
+    });
 
     // code for creating an SVG donut chart from feature properties
     const createDonutChart = (props) => {
-      const offsets = []
-      const counts = []
+      const offsets = [];
+      const counts = [];
 
       this.props.domain.categories.forEach(({ category }) => {
-        counts.push(props[category])
-      })
+        counts.push(props[category]);
+      });
 
-      let total = 0
+      let total = 0;
       for (let i = 0; i < counts.length; i++) {
-        offsets.push(total)
-        total += counts[i]
+        offsets.push(total);
+        total += counts[i];
       }
-      const fontSize = total >= 1000 ? 22 : total >= 100 ? 20 : total >= 10 ? 13 : 10
-      const r = total >= 1000 ? 50 : total >= 100 ? 32 : total >= 10 ? 24 : 18
-      const r0 = Math.round(r * 0.6)
-      const w = r * 2
+      const fontSize = total >= 1000 ? 22 : total >= 100 ? 20 : total >= 10 ? 13 : 10;
+      const r = total >= 1000 ? 50 : total >= 100 ? 32 : total >= 10 ? 24 : 18;
+      const r0 = Math.round(r * 0.6);
+      const w = r * 2;
 
       let html =
         `<div><svg width="${w}" height="${w}" viewbox="0 0 ${w} ${w}" ` +
-        `text-anchor="middle" style="font: ${fontSize}px sans-serif; display: block">`
+        `text-anchor="middle" style="font: ${fontSize}px sans-serif; display: block">`;
 
       for (let i = 0; i < counts.length; i++) {
-        const { category } = this.props.domain.categories[i]
-        const color = this.props.methods.getCategoryColor(category)
-        html += donutSegment(offsets[i] / total, (offsets[i] + counts[i]) / total, r, r0, color)
+        const { category } = this.props.domain.categories[i];
+        const color = this.props.methods.getCategoryColor(category);
+        html += donutSegment(offsets[i] / total, (offsets[i] + counts[i]) / total, r, r0, color);
       }
 
       html +=
         `<circle cx="${r}" cy="${r}" r="${r0}" ` +
         `fill="#222423" /><text fill="#f5f3ed" dominant-baseline="central" transform="translate(${r}, ${r})">` +
-        `${total.toLocaleString()}</text></svg></div>`
+        `${total.toLocaleString()}</text></svg></div>`;
 
-      const el = document.createElement('div')
-      el.innerHTML = html
+      const el = document.createElement('div');
+      el.innerHTML = html;
 
-      return el.firstChild
-    }
+      return el.firstChild;
+    };
 
-    function donutSegment (start, end, r, r0, color) {
-      if (end - start === 1) end -= 0.00001
-      const a0 = 2 * Math.PI * (start - 0.25)
-      const a1 = 2 * Math.PI * (end - 0.25)
-      const x0 = Math.cos(a0)
-      const y0 = Math.sin(a0)
-      const x1 = Math.cos(a1)
-      const y1 = Math.sin(a1)
-      const largeArc = end - start > 0.5 ? 1 : 0
-      const _x0 = r + r0 * x0
-      const _y0 = r + r0 * y0
+    function donutSegment(start, end, r, r0, color) {
+      if (end - start === 1) end -= 0.00001;
+      const a0 = 2 * Math.PI * (start - 0.25);
+      const a1 = 2 * Math.PI * (end - 0.25);
+      const x0 = Math.cos(a0);
+      const y0 = Math.sin(a0);
+      const x1 = Math.cos(a1);
+      const y1 = Math.sin(a1);
+      const largeArc = end - start > 0.5 ? 1 : 0;
+      const _x0 = r + r0 * x0;
+      const _y0 = r + r0 * y0;
 
       return (
         `<path d="M ${_x0} ${_y0} L ${r + r * x0} ${r + r * y0}` +
         `A ${r} ${r} 0 ${largeArc} 1 ${r + r * x1} ${r + r * y1}` +
         `L ${r + r0 * x1} ${r + r0 * y1} A ${r0} ${r0} 0 ${largeArc} 0 ${_x0} ${_y0}"` +
         `fill="${color}" />`
-      )
+      );
     }
 
     this.setState({
-      puntosCargados: true
-    })
+      puntosCargados: true,
+    });
   }
 
-  render () {
-    const classes = this.props.app.narrative ? 'map-wrapper narrative-mode' : 'map-wrapper'
+  render() {
+    const classes = this.props.app.narrative ? 'map-wrapper narrative-mode' : 'map-wrapper';
 
     return (
-      <div className={classes} onKeyDown={this.props.onKeyDown} tabIndex='0'>
+      <div className={classes} onKeyDown={this.props.onKeyDown} tabIndex="0">
         <div id={this.props.ui.dom.map} />
       </div>
-    )
+    );
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
     domain: {
       locations: selectors.selectLocations(state),
@@ -332,7 +332,7 @@ function mapStateToProps (state) {
       categories: selectors.getCategories(state),
       sites: selectors.selectSites(state),
       shapes: selectors.selectShapes(state),
-      events: selectors.selectEvents(state)
+      events: selectors.selectEvents(state),
     },
     app: {
       views: state.app.associations.views,
@@ -341,8 +341,8 @@ function mapStateToProps (state) {
       map: state.app.map,
       narrative: state.app.associations.narrative,
       flags: {
-        isShowingSites: state.app.flags.isShowingSites
-      }
+        isShowingSites: state.app.flags.isShowingSites,
+      },
     },
     ui: {
       tiles: state.ui.tiles,
@@ -350,10 +350,10 @@ function mapStateToProps (state) {
       narratives: state.ui.style.narratives,
       mapSelectedEvents: state.ui.style.selectedEvents,
       shapes: state.ui.style.shapes,
-      eventRadius: state.ui.eventRadius
+      eventRadius: state.ui.eventRadius,
     },
-    features: selectors.getFeatures(state)
-  }
+    features: selectors.getFeatures(state),
+  };
 }
 
-export default connect(mapStateToProps)(Map)
+export default connect(mapStateToProps)(Map);

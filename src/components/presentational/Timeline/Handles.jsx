@@ -1,7 +1,7 @@
-import React from 'react'
+import React from 'react';
 
 const TimelineHandles = ({ dims, onMoveTime }) => {
-  return <div />
+  return <div />;
   // temporarilty disabled while we get functionality working again
   // return (
   //   <g className="time-controls-inline">
@@ -27,6 +27,6 @@ const TimelineHandles = ({ dims, onMoveTime }) => {
   //     </g>
   //   </g>
   // );
-}
+};
 
-export default TimelineHandles
+export default TimelineHandles;

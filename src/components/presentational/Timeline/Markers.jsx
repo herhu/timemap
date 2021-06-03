@@ -1,5 +1,5 @@
-import React from 'react'
-import colors from '../../../common/global'
+import React from 'react';
+import colors from '../../../common/global';
 
 const TimelineMarkers = ({
   styles,
@@ -9,69 +9,69 @@ const TimelineMarkers = ({
   transitionDuration,
   selected,
   dims,
-  features
+  features,
 }) => {
-  function renderMarker (event, idx) {
-    function renderCircle () {
+  function renderMarker(event, idx) {
+    function renderCircle() {
       return (
         <circle
           key={`timelineMarker-${idx}`}
-          className='timeline-marker'
+          className="timeline-marker"
           cx={0}
           cy={0}
           stroke={styles ? styles.stroke : colors.primaryHighlight}
-          strokeOpacity='1'
+          strokeOpacity="1"
           strokeWidth={styles ? styles['stroke-width'] : 1}
-          strokeLinejoin='round'
+          strokeLinejoin="round"
           strokeDasharray={styles ? styles['stroke-dasharray'] : '2,2'}
           style={{
             transform: `translate(${getEventX(event)}px, ${getEventY(event)}px)`,
             WebkitTransition: `transform ${transitionDuration / 1000}s ease`,
             MozTransition: 'none',
-            opacity: 0.9
+            opacity: 0.9,
           }}
           r={eventRadius * 2}
         />
-      )
+      );
     }
 
-    function renderBar () {
+    function renderBar() {
       return (
         <rect
           key={`timelineMarker-${idx}`}
-          className='timeline-marker'
+          className="timeline-marker"
           x={0}
           y={0}
           width={eventRadius / 2}
           height={dims.contentHeight - 55}
           stroke={styles ? styles.stroke : colors.primaryHighlight}
-          strokeOpacity='1'
+          strokeOpacity="1"
           strokeWidth={styles ? styles['stroke-width'] : 1}
           strokeDasharray={styles ? styles['stroke-dasharray'] : '2,2'}
           style={{
             transform: `translate(${getEventX(event)}px)`,
-            opacity: 0.7
+            opacity: 0.7,
           }}
         />
-      )
+      );
     }
-    const isDot = (!!event.location && !!event.longitude) || (features.GRAPH_NONLOCATED && event.projectOffset !== -1)
+    const isDot = (!!event.location && !!event.longitude) || (features.GRAPH_NONLOCATED && event.projectOffset !== -1);
 
     switch (event.shape) {
       case 'circle':
-        return renderCircle()
+        return renderCircle();
       case 'bar':
-        return renderBar()
+        return renderBar();
       case 'diamond':
-        return renderCircle()
+        return renderCircle();
       case 'star':
-        return renderCircle()
+        return renderCircle();
       default:
-        return isDot ? renderCircle() : renderBar()
+        return isDot ? renderCircle() : renderBar();
     }
   }
 
-  return <g clipPath='url(#clip)'>{selected.map((event, idx) => renderMarker(event, idx))}</g>
-}
+  return <g clipPath="url(#clip)">{selected.map((event, idx) => renderMarker(event, idx))}</g>;
+};
 
-export default TimelineMarkers
+export default TimelineMarkers;

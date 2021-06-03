@@ -1,10 +1,10 @@
-import React from 'react'
+import React from 'react';
 
 const SearchRow = ({ query, eventObj, onSearchRowClick }) => {
-  const { description, location, date } = eventObj
-  function getHighlightedText (text, highlight) {
+  const { description, location, date } = eventObj;
+  function getHighlightedText(text, highlight) {
     // Split text on highlight term, include term itself into parts, ignore case
-    const parts = text.split(new RegExp(`(${highlight})`, 'gi'))
+    const parts = text.split(new RegExp(`(${highlight})`, 'gi'));
     return (
       <span>
         {parts.map((part) =>
@@ -15,29 +15,29 @@ const SearchRow = ({ query, eventObj, onSearchRowClick }) => {
           )
         )}
       </span>
-    )
+    );
   }
 
-  function getShortDescription (text, searchQuery) {
-    const regexp = new RegExp(`(([^ ]* ){0,6}[a-zA-Z]*${searchQuery.toLowerCase()}[a-zA-Z]*( [^ ]*){0,5})`, 'gm')
-    const parts = text.toLowerCase().match(regexp)
+  function getShortDescription(text, searchQuery) {
+    const regexp = new RegExp(`(([^ ]* ){0,6}[a-zA-Z]*${searchQuery.toLowerCase()}[a-zA-Z]*( [^ ]*){0,5})`, 'gm');
+    const parts = text.toLowerCase().match(regexp);
 
     for (let x = 0; x < (parts ? parts.length : 0); x++) {
-      parts[x] = '...' + parts[x]
+      parts[x] = '...' + parts[x];
     }
-    const firstLine = [text.match('(([^ ]* ){0,10})', 'm')[0]]
-    return parts || firstLine
+    const firstLine = [text.match('(([^ ]* ){0,10})', 'm')[0]];
+    return parts || firstLine;
   }
 
   return (
-    <div className='search-row' onClick={() => onSearchRowClick([eventObj])}>
-      <div className='location-date-container'>
-        <div className='date-container'>
-          <i className='material-icons'>event</i>
+    <div className="search-row" onClick={() => onSearchRowClick([eventObj])}>
+      <div className="location-date-container">
+        <div className="date-container">
+          <i className="material-icons">event</i>
           <p>{getHighlightedText(date, query)}</p>
         </div>
-        <div className='location-container'>
-          <i className='material-icons'>location_on</i>
+        <div className="location-container">
+          <i className="material-icons">location_on</i>
           <p>{getHighlightedText(location, query)}</p>
         </div>
       </div>
@@ -48,11 +48,11 @@ const SearchRow = ({ query, eventObj, onSearchRowClick }) => {
               {getHighlightedText(match, query)}...
               <br />
             </span>
-          )
+          );
         })}
       </p>
     </div>
-  )
-}
+  );
+};
 
-export default SearchRow
+export default SearchRow;

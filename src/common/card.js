@@ -6,13 +6,13 @@ const basic = ({ event }) => {
       {
         kind: 'date',
         title: 'Incident Date',
-        value: event.datetime || event.date || ''
+        value: event.datetime || event.date || '',
       },
       {
         kind: 'text',
         title: 'Location',
-        value: event.location || '—'
-      }
+        value: event.location || '—',
+      },
     ],
     [{ kind: 'line-break', times: 0.4 }],
     [
@@ -20,12 +20,12 @@ const basic = ({ event }) => {
         kind: 'text',
         title: 'Summary',
         value: event.description || '',
-        scaleFont: 1.1
-      }
-    ]
-  ]
-}
+        scaleFont: 1.1,
+      },
+    ],
+  ];
+};
 
 export default {
-  basic
-}
+  basic,
+};

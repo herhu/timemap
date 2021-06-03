@@ -1,52 +1,52 @@
-import Joi from 'joi'
+import Joi from 'joi';
 
-import createEventSchema from './eventSchema'
-import placeSchema from './placeSchema'
-import categorySchema from './categorySchema'
-import victimaSchema from './victimaSchema'
-import siteSchema from './siteSchema'
-import associationsSchema from './associationsSchema'
-import sourceSchema from './sourceSchema'
-import shapeSchema from './shapeSchema'
+import createEventSchema from './eventSchema';
+import placeSchema from './placeSchema';
+import categorySchema from './categorySchema';
+import victimaSchema from './victimaSchema';
+import siteSchema from './siteSchema';
+import associationsSchema from './associationsSchema';
+import sourceSchema from './sourceSchema';
+import shapeSchema from './shapeSchema';
 
-import { calcDatetime, capitalize } from '../../common/utilities'
+import { calcDatetime, capitalize } from '../../common/utilities';
 
 /*
  * Create an error notification object
  * Types: ['error', 'warning', 'good', 'neural']
  */
-function makeError (type, id, message) {
+function makeError(type, id, message) {
   return {
     type: 'error',
     id,
-    message: `${type} ${id}: ${message}`
-  }
+    message: `${type} ${id}: ${message}`,
+  };
 }
 
-function isValidDate (d) {
-  return d instanceof Date && !isNaN(d)
+function isValidDate(d) {
+  return d instanceof Date && !isNaN(d);
 }
 
-function findDuplicateAssociations (associations) {
-  const seenSet = new Set([])
-  const duplicates = []
+function findDuplicateAssociations(associations) {
+  const seenSet = new Set([]);
+  const duplicates = [];
   associations.forEach((item) => {
     if (seenSet.has(item.id)) {
       duplicates.push({
         id: item.id,
-        error: makeError('Association', item.id, 'association was found more than once. Ignoring duplicate.')
-      })
+        error: makeError('Association', item.id, 'association was found more than once. Ignoring duplicate.'),
+      });
     } else {
-      seenSet.add(item.id)
+      seenSet.add(item.id);
     }
-  })
-  return duplicates
+  });
+  return duplicates;
 }
 
 /*
  * Validate domain schema
  */
-export function validateDomain (domain, features) {
+export function validateDomain(domain, features) {
   const sanitizedDomain = {
     events: [],
     cais: [],
@@ -56,59 +56,59 @@ export function validateDomain (domain, features) {
     associations: [],
     // sources: {},
     // shapes: [],
-    notifications: domain ? domain.notifications : null
-  }
+    notifications: domain ? domain.notifications : null,
+  };
 
   if (domain === undefined) {
-    return sanitizedDomain
+    return sanitizedDomain;
   }
 
   const discardedDomain = {
     events: [],
     cais: [],
     categories: [],
-    victimas: []
-  }
+    victimas: [],
+  };
 
-  function validateArrayItem (item, domainKey, schema) {
-    const { error, value } = schema.validate(item)
+  function validateArrayItem(item, domainKey, schema) {
+    const { error, value } = schema.validate(item);
 
     if (error) {
-      const id = item.id || '-'
-      const domainStr = capitalize(domainKey)
-      const err = makeError(domainStr, id, error.message)
+      const id = item.id || '-';
+      const domainStr = capitalize(domainKey);
+      const err = makeError(domainStr, id, error.message);
 
-      discardedDomain[domainKey].push(Object.assign(item, { err }))
+      discardedDomain[domainKey].push(Object.assign(item, { err }));
     } else {
-      sanitizedDomain[domainKey].push(value)
+      sanitizedDomain[domainKey].push(value);
     }
   }
 
-  function validateArray (items, domainKey, schema) {
+  function validateArray(items, domainKey, schema) {
     items.forEach((item) => {
-      validateArrayItem(item, domainKey, schema)
-    })
+      validateArrayItem(item, domainKey, schema);
+    });
   }
 
-  function validateObject (obj, domainKey, itemSchema) {
+  function validateObject(obj, domainKey, itemSchema) {
     Object.keys(obj).forEach((key) => {
-      const vl = obj[key]
-      const result = Joi.validate(vl, itemSchema)
+      const vl = obj[key];
+      const result = Joi.validate(vl, itemSchema);
       if (result.error !== null) {
-        const id = vl.id || '-'
-        const domainStr = capitalize(domainKey)
+        const id = vl.id || '-';
+        const domainStr = capitalize(domainKey);
         discardedDomain[domainKey].push({
           ...vl,
-          error: makeError(domainStr, id, result.error.message)
-        })
+          error: makeError(domainStr, id, result.error.message),
+        });
       } else {
-        sanitizedDomain[domainKey][key] = vl
+        sanitizedDomain[domainKey][key] = vl;
       }
-    })
+    });
   }
 
   if (!Array.isArray(features.CUSTOM_EVENT_FIELDS)) {
-    features.CUSTOM_EVENT_FIELDS = []
+    features.CUSTOM_EVENT_FIELDS = [];
   }
 
   // domain.victimas
@@ -130,16 +130,16 @@ export function validateDomain (domain, features) {
   //   });
 
   domain.eventos.forEach((evento) => {
-    const match = domain.cais.find((cai) => cai.name === evento.location)
+    const match = domain.cais.find((cai) => cai.name === evento.location);
 
-    if (match) evento.location = `${evento.location} (${match.localidad})`
-  })
+    if (match) evento.location = `${evento.location} (${match.localidad})`;
+  });
 
-  const eventSchema = createEventSchema(features.CUSTOM_EVENT_FIELDS)
-  validateArray(domain.eventos, 'events', eventSchema)
-  validateArray(domain.cais, 'cais', placeSchema)
+  const eventSchema = createEventSchema(features.CUSTOM_EVENT_FIELDS);
+  validateArray(domain.eventos, 'events', eventSchema);
+  validateArray(domain.cais, 'cais', placeSchema);
   // validateArray(domain.filters, 'filters', Joi.string());
-  validateArray(domain.categories, 'categories', categorySchema)
+  validateArray(domain.categories, 'categories', categorySchema);
   // validateArray(domain.sites, 'sites', siteSchema);
   // validateArray(domain.associations, 'associations', associationsSchema);
   // validateObject(domain.sources, 'sources', sourceSchema);
@@ -164,43 +164,43 @@ export function validateDomain (domain, features) {
 
   // append events with datetime and sort
 
-  const categoriasUsadas = []
+  const categoriasUsadas = [];
   sanitizedDomain.events = sanitizedDomain.events.filter((event, idx) => {
-    if (!categoriasUsadas.includes(event.category)) categoriasUsadas.push(event.category)
+    if (!categoriasUsadas.includes(event.category)) categoriasUsadas.push(event.category);
 
-    event.id = idx
-    event.datetime = calcDatetime(event.date, event.time)
+    event.id = idx;
+    event.datetime = calcDatetime(event.date, event.time);
     if (!isValidDate(event.datetime)) {
       discardedDomain.events.push({
         ...event,
         error: makeError(
           'event',
           event.id,
-          'Invalid date. It\'s been dropped, as otherwise timemap won\'t work as expected.'
-        )
-      })
-      return false
+          "Invalid date. It's been dropped, as otherwise timemap won't work as expected."
+        ),
+      });
+      return false;
     }
 
-    return true
-  })
+    return true;
+  });
 
   sanitizedDomain.categories = sanitizedDomain.categories.filter(({ category }) => {
-    return categoriasUsadas.includes(category)
-  })
+    return categoriasUsadas.includes(category);
+  });
 
-  sanitizedDomain.events.sort((a, b) => a.datetime - b.datetime)
+  sanitizedDomain.events.sort((a, b) => a.datetime - b.datetime);
   // Message the number of failed items in domain
   Object.keys(discardedDomain).forEach((disc) => {
-    const len = discardedDomain[disc].length
+    const len = discardedDomain[disc].length;
     if (len) {
       sanitizedDomain.notifications.push({
         message: `${len} invalid ${disc} not displayed.`,
         items: discardedDomain[disc],
-        type: 'error'
-      })
+        type: 'error',
+      });
     }
-  })
+  });
 
-  return sanitizedDomain
+  return sanitizedDomain;
 }

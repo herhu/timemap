@@ -1,12 +1,11 @@
-import React from 'react'
+import React from 'react';
 
 export default ({ x, y, r, transform, onSelect, styleProps, extraRender, idx }) => {
-  console.log(x)
   return (
     <rect
       key={`dateTimeSquare-${idx}`}
       onClick={onSelect}
-      className='event'
+      className="event"
       x={x}
       y={y - r}
       style={styleProps}
@@ -14,5 +13,5 @@ export default ({ x, y, r, transform, onSelect, styleProps, extraRender, idx }) 
       height={r}
       transform={`rotate(45, ${x}, ${y})`}
     />
-  )
-}
+  );
+};

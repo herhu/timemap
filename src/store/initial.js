@@ -1,5 +1,5 @@
-import { mergeDeepLeft } from 'ramda'
-import global from '../common/global'
+import { mergeDeepLeft } from 'ramda';
+import global from '../common/global';
 
 const initial = {
   /*
@@ -16,7 +16,7 @@ const initial = {
     associations: [],
     sources: {},
     sites: [],
-    notifications: []
+    notifications: [],
   },
 
   /*
@@ -29,7 +29,7 @@ const initial = {
    */
   app: {
     errors: {
-      source: false
+      source: false,
     },
     highlighted: null,
     selected: [],
@@ -41,8 +41,8 @@ const initial = {
       views: {
         events: true,
         routes: false,
-        sites: true
-      }
+        sites: true,
+      },
     },
     isMobile: /Mobi/.test(navigator.userAgent),
     language: 'es-MX',
@@ -54,8 +54,8 @@ const initial = {
       bounds: null,
       maxBounds: [
         [180, -180],
-        [-180, 180]
-      ]
+        [-180, 180],
+      ],
     },
     timeline: {
       dimensions: {
@@ -65,7 +65,7 @@ const initial = {
         marginTop: 15,
         marginBottom: 60,
         contentHeight: 200,
-        width_controls: 80
+        width_controls: 80,
       },
       range: [new Date(2021, 3, 4, 11), new Date(2021, 5, 1, 9)],
       // rangeLimits: [new Date(1, 1, 1, 1), new Date()],
@@ -75,8 +75,8 @@ const initial = {
         { label: '3 meses', duration: 129600 },
         { label: '3 días', duration: 4320 },
         { label: '12 horas', duration: 720 },
-        { label: '1 hora', duration: 60 }
-      ]
+        { label: '1 hora', duration: 60 },
+      ],
     },
     flags: {
       isFetchingDomain: false,
@@ -84,15 +84,15 @@ const initial = {
       isCover: true,
       isCardstack: true,
       isInfopopup: false,
-      isShowingSites: true
+      isShowingSites: true,
     },
     cover: {
       title: 'project title',
       description:
         'A description of the project goes here.\n\nThis description may contain markdown.\n\n# This is a large title, for example.\n\n## Whereas this is a slightly smaller title.\n\nCheck out docs/custom-covers.md in the [Timemap GitHub repo](https://github.com/forensic-architecture/timemap) for more information around how to specify custom covers.',
-      exploreButton: 'EXPLORE'
+      exploreButton: 'EXPLORE',
     },
-    loading: false
+    loading: false,
   },
 
   /*
@@ -117,29 +117,29 @@ const initial = {
         'Otras agresiones': '#F2B035',
         //'Otras agresiones': '#774ba3',
         'Conducta sospechosa policía': '#86f7f2',
-        'Policía disparando arma de fuego': '#78548a'
+        'Policía disparando arma de fuego': '#78548a',
       },
       narratives: {
         default: {
           opacity: 0.9,
           stroke: global.fallbackEventColor,
-          strokeWidth: 3
-        }
+          strokeWidth: 3,
+        },
       },
       shapes: {
         default: {
           stroke: 'blue',
           strokeWidth: 3,
-          opacity: 0.9
-        }
-      }
+          opacity: 0.9,
+        },
+      },
     },
     dom: {
       timeline: 'timeline',
       timeslider: 'timeslider',
-      map: 'map'
+      map: 'map',
     },
-    eventRadius: 8
+    eventRadius: 8,
   },
 
   features: {
@@ -149,19 +149,19 @@ const initial = {
     USE_SOURCES: false,
     USE_SHAPES: false,
     GRAPH_NONLOCATED: false,
-    HIGHLIGHT_GROUPS: false
-  }
-}
+    HIGHLIGHT_GROUPS: false,
+  },
+};
 
-let appStore
+let appStore;
 if (process.env.store) {
-  appStore = mergeDeepLeft(process.env.store, initial)
+  appStore = mergeDeepLeft(process.env.store, initial);
 } else {
-  appStore = initial
+  appStore = initial;
 }
 
 // NB: config.js dates get implicitly converted to strings in mergeDeepLeft
-appStore.app.timeline.range[0] = new Date(appStore.app.timeline.range[0])
-appStore.app.timeline.range[1] = new Date(appStore.app.timeline.range[1])
+appStore.app.timeline.range[0] = new Date(appStore.app.timeline.range[0]);
+appStore.app.timeline.range[1] = new Date(appStore.app.timeline.range[1]);
 
-export default appStore
+export default appStore;

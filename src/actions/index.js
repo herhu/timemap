@@ -1,33 +1,33 @@
 /* global fetch */
-import { urlFromEnv } from '../common/utilities'
+import { urlFromEnv } from '../common/utilities';
 
 // TODO: relegate these URLs entirely to environment variables
 // const CONFIG_URL = urlFromEnv('CONFIG_EXT')
-const EVENT_DATA_URL = urlFromEnv('EVENTS_EXT')
-const VICTIMAS_EXT = urlFromEnv('VICTIMAS_EXT')
-const CAIS_EXT = urlFromEnv('CAIS_EXT')
+const EVENT_DATA_URL = urlFromEnv('EVENTS_EXT');
+const VICTIMAS_EXT = urlFromEnv('VICTIMAS_EXT');
+const CAIS_EXT = urlFromEnv('CAIS_EXT');
 // const CATEGORY_URL = urlFromEnv('CATEGORIES_EXT');
 // const ASSOCIATIONS_URL = urlFromEnv('ASSOCIATIONS_EXT');
-const SOURCES_URL = urlFromEnv('SOURCES_EXT')
+const SOURCES_URL = urlFromEnv('SOURCES_EXT');
 // const SITES_URL = urlFromEnv('SITES_EXT');
 // const SHAPES_URL = urlFromEnv('SHAPES_EXT');
-const STATIC_URL = urlFromEnv('STATIC_EXT')
+const STATIC_URL = urlFromEnv('STATIC_EXT');
 
-export function fetchDomain () {
-  const notifications = []
+export function fetchDomain() {
+  const notifications = [];
 
-  function handleError (message) {
+  function handleError(message) {
     notifications.push({
       message,
-      type: 'error'
-    })
-    return []
+      type: 'error',
+    });
+    return [];
   }
 
   return (dispatch, getState) => {
-    if (!EVENT_DATA_URL) return
+    if (!EVENT_DATA_URL) return;
     // const features = getState().features;
-    dispatch(toggleFetchingDomain())
+    dispatch(toggleFetchingDomain());
 
     // let configPromise = Promise.resolve([])
     // if (features.USE_REMOTE_CONFIG) {
@@ -44,7 +44,7 @@ export function fetchDomain () {
           .then((response) => response.json())
           .catch(() => handleError('events'))
       )
-    ).then((results) => results.flatMap((t) => t))
+    ).then((results) => results.flatMap((t) => t));
 
     /**
      * Nuevo endpoint para importar las categorias y CAIs en proyecto 9S.
@@ -52,15 +52,15 @@ export function fetchDomain () {
      */
     const staticPromise = fetch(STATIC_URL)
       .then((response) => response.json())
-      .catch(() => handleError('static'))
+      .catch(() => handleError('static'));
 
     const caisPromise = fetch(CAIS_EXT)
       .then((response) => response.json())
-      .catch(() => handleError('cais'))
+      .catch(() => handleError('cais'));
 
     const victimasPromise = fetch(VICTIMAS_EXT)
       .then((response) => response.json())
-      .catch(() => handleError('victimas'))
+      .catch(() => handleError('victimas'));
 
     // let catPromise = Promise.resolve([]);
     // if (features.USE_CATEGORIES) {
@@ -109,7 +109,7 @@ export function fetchDomain () {
 
     return Promise.all([eventPromise, caisPromise, staticPromise, victimasPromise])
       .then((response) => {
-        const eventos = response[0].filter((evento) => +evento.date.split('/')[2] === 2021)
+        const eventos = response[0].filter((evento) => +evento.date.split('/')[2] === 2021);
 
         const result = {
           // eventos: response[0],
@@ -123,237 +123,237 @@ export function fetchDomain () {
           // sources: response[3],
           // sites: response[4],
           // shapes: response[5],
-          notifications
-        }
+          notifications,
+        };
 
         if (Object.values(result).some((resp) => resp.hasOwnProperty('error'))) {
-          throw new Error('Some URLs returned negative. If you are in development, check the server is running')
+          throw new Error('Some URLs returned negative. If you are in development, check the server is running');
         }
-        dispatch(toggleFetchingDomain())
-        return result
+        dispatch(toggleFetchingDomain());
+        return result;
       })
       .catch((err) => {
-        dispatch(fetchError(err.message))
-        dispatch(toggleFetchingDomain())
-        console.log(err)
-      })
-  }
+        dispatch(fetchError(err.message));
+        dispatch(toggleFetchingDomain());
+        console.log(err);
+      });
+  };
 }
 
-export const FETCH_ERROR = 'FETCH_ERROR'
-export function fetchError (message) {
+export const FETCH_ERROR = 'FETCH_ERROR';
+export function fetchError(message) {
   return {
     type: FETCH_ERROR,
-    message
-  }
+    message,
+  };
 }
 
-export const UPDATE_DOMAIN = 'UPDATE_DOMAIN'
-export function updateDomain (payload) {
+export const UPDATE_DOMAIN = 'UPDATE_DOMAIN';
+export function updateDomain(payload) {
   return {
     type: UPDATE_DOMAIN,
-    payload
-  }
+    payload,
+  };
 }
 
-export function fetchSource (source) {
+export function fetchSource(source) {
   return (dispatch) => {
     if (!SOURCES_URL) {
-      dispatch(fetchSourceError('No source extension specified.'))
+      dispatch(fetchSourceError('No source extension specified.'));
     } else {
-      dispatch(toggleFetchingSources())
+      dispatch(toggleFetchingSources());
 
       fetch(`${SOURCES_URL}`)
         .then((response) => {
           if (!response.ok) {
-            throw new Error('No sources are available at the URL specified in the config specified.')
+            throw new Error('No sources are available at the URL specified in the config specified.');
           } else {
-            return response.json()
+            return response.json();
           }
         })
         .catch((err) => {
-          dispatch(fetchSourceError(err.message))
-          dispatch(toggleFetchingSources())
-        })
+          dispatch(fetchSourceError(err.message));
+          dispatch(toggleFetchingSources());
+        });
     }
-  }
+  };
 }
 
-export const UPDATE_HIGHLIGHTED = 'UPDATE_HIGHLIGHTED'
-export function updateHighlighted (highlighted) {
+export const UPDATE_HIGHLIGHTED = 'UPDATE_HIGHLIGHTED';
+export function updateHighlighted(highlighted) {
   return {
     type: UPDATE_HIGHLIGHTED,
-    highlighted: highlighted
-  }
+    highlighted: highlighted,
+  };
 }
 
-export const UPDATE_SELECTED = 'UPDATE_SELECTED'
-export function updateSelected (selected) {
+export const UPDATE_SELECTED = 'UPDATE_SELECTED';
+export function updateSelected(selected) {
   return {
     type: UPDATE_SELECTED,
-    selected: selected
-  }
+    selected: selected,
+  };
 }
 
-export const UPDATE_DISTRICT = 'UPDATE_DISTRICT'
-export function updateDistrict (district) {
+export const UPDATE_DISTRICT = 'UPDATE_DISTRICT';
+export function updateDistrict(district) {
   return {
     type: UPDATE_DISTRICT,
-    district
-  }
+    district,
+  };
 }
 
-export const CLEAR_FILTER = 'CLEAR_FILTER'
-export function clearFilter (filter) {
+export const CLEAR_FILTER = 'CLEAR_FILTER';
+export function clearFilter(filter) {
   return {
     type: CLEAR_FILTER,
-    filter
-  }
+    filter,
+  };
 }
 
-export const TOGGLE_FILTER = 'TOGGLE_FILTER'
-export function toggleFilter (filter, value) {
+export const TOGGLE_FILTER = 'TOGGLE_FILTER';
+export function toggleFilter(filter, value) {
   return {
     type: TOGGLE_FILTER,
     filter,
-    value
-  }
+    value,
+  };
 }
 
-export const SET_LOADING = 'SET_LOADING'
-export function setLoading () {
+export const SET_LOADING = 'SET_LOADING';
+export function setLoading() {
   return {
-    type: SET_LOADING
-  }
+    type: SET_LOADING,
+  };
 }
 
-export const SET_NOT_LOADING = 'SET_NOT_LOADING'
-export function setNotLoading () {
+export const SET_NOT_LOADING = 'SET_NOT_LOADING';
+export function setNotLoading() {
   return {
-    type: SET_NOT_LOADING
-  }
+    type: SET_NOT_LOADING,
+  };
 }
 
-export const UPDATE_TIMERANGE = 'UPDATE_TIMERANGE'
-export function updateTimeRange (timerange) {
+export const UPDATE_TIMERANGE = 'UPDATE_TIMERANGE';
+export function updateTimeRange(timerange) {
   return {
     type: UPDATE_TIMERANGE,
-    timerange
-  }
+    timerange,
+  };
 }
 
-export const UPDATE_DIMENSIONS = 'UPDATE_DIMENSIONS'
-export function updateDimensions (dims) {
+export const UPDATE_DIMENSIONS = 'UPDATE_DIMENSIONS';
+export function updateDimensions(dims) {
   return {
     type: UPDATE_DIMENSIONS,
-    dims
-  }
+    dims,
+  };
 }
 
-export const UPDATE_NARRATIVE = 'UPDATE_NARRATIVE'
-export function updateNarrative (narrative) {
+export const UPDATE_NARRATIVE = 'UPDATE_NARRATIVE';
+export function updateNarrative(narrative) {
   return {
     type: UPDATE_NARRATIVE,
-    narrative
-  }
+    narrative,
+  };
 }
 
-export const UPDATE_NARRATIVE_STEP_IDX = 'UPDATE_NARRATIVE_STEP_IDX'
-export function updateNarrativeStepIdx (idx) {
+export const UPDATE_NARRATIVE_STEP_IDX = 'UPDATE_NARRATIVE_STEP_IDX';
+export function updateNarrativeStepIdx(idx) {
   return {
     type: UPDATE_NARRATIVE_STEP_IDX,
-    idx
-  }
+    idx,
+  };
 }
 
-export const UPDATE_SOURCE = 'UPDATE_SOURCE'
-export function updateSource (source) {
+export const UPDATE_SOURCE = 'UPDATE_SOURCE';
+export function updateSource(source) {
   return {
     type: UPDATE_SOURCE,
-    source
-  }
+    source,
+  };
 }
 
 // UI
 
-export const TOGGLE_SITES = 'TOGGLE_SITES'
-export function toggleSites () {
+export const TOGGLE_SITES = 'TOGGLE_SITES';
+export function toggleSites() {
   return {
-    type: TOGGLE_SITES
-  }
+    type: TOGGLE_SITES,
+  };
 }
 
-export const TOGGLE_FETCHING_DOMAIN = 'TOGGLE_FETCHING_DOMAIN'
-export function toggleFetchingDomain () {
+export const TOGGLE_FETCHING_DOMAIN = 'TOGGLE_FETCHING_DOMAIN';
+export function toggleFetchingDomain() {
   return {
-    type: TOGGLE_FETCHING_DOMAIN
-  }
+    type: TOGGLE_FETCHING_DOMAIN,
+  };
 }
 
-export const TOGGLE_FETCHING_SOURCES = 'TOGGLE_FETCHING_SOURCES'
-export function toggleFetchingSources () {
+export const TOGGLE_FETCHING_SOURCES = 'TOGGLE_FETCHING_SOURCES';
+export function toggleFetchingSources() {
   return {
-    type: TOGGLE_FETCHING_SOURCES
-  }
+    type: TOGGLE_FETCHING_SOURCES,
+  };
 }
 
-export const TOGGLE_LANGUAGE = 'TOGGLE_LANGUAGE'
-export function toggleLanguage (language) {
+export const TOGGLE_LANGUAGE = 'TOGGLE_LANGUAGE';
+export function toggleLanguage(language) {
   return {
     type: TOGGLE_LANGUAGE,
-    language
-  }
+    language,
+  };
 }
 
-export const CLOSE_TOOLBAR = 'CLOSE_TOOLBAR'
-export function closeToolbar () {
+export const CLOSE_TOOLBAR = 'CLOSE_TOOLBAR';
+export function closeToolbar() {
   return {
-    type: CLOSE_TOOLBAR
-  }
+    type: CLOSE_TOOLBAR,
+  };
 }
 
-export const TOGGLE_INFOPOPUP = 'TOGGLE_INFOPOPUP'
-export function toggleInfoPopup () {
+export const TOGGLE_INFOPOPUP = 'TOGGLE_INFOPOPUP';
+export function toggleInfoPopup() {
   return {
-    type: TOGGLE_INFOPOPUP
-  }
+    type: TOGGLE_INFOPOPUP,
+  };
 }
 
-export const TOGGLE_NOTIFICATIONS = 'TOGGLE_NOTIFICATIONS'
-export function toggleNotifications () {
+export const TOGGLE_NOTIFICATIONS = 'TOGGLE_NOTIFICATIONS';
+export function toggleNotifications() {
   return {
-    type: TOGGLE_NOTIFICATIONS
-  }
+    type: TOGGLE_NOTIFICATIONS,
+  };
 }
 
-export const MARK_NOTIFICATIONS_READ = 'MARK_NOTIFICATIONS_READ'
-export function markNotificationsRead () {
+export const MARK_NOTIFICATIONS_READ = 'MARK_NOTIFICATIONS_READ';
+export function markNotificationsRead() {
   return {
-    type: MARK_NOTIFICATIONS_READ
-  }
+    type: MARK_NOTIFICATIONS_READ,
+  };
 }
 
-export const TOGGLE_COVER = 'TOGGLE_COVER'
-export function toggleCover () {
+export const TOGGLE_COVER = 'TOGGLE_COVER';
+export function toggleCover() {
   return {
-    type: TOGGLE_COVER
-  }
+    type: TOGGLE_COVER,
+  };
 }
 
-export const UPDATE_SEARCH_QUERY = 'UPDATE_SEARCH_QUERY'
-export function updateSearchQuery (searchQuery) {
+export const UPDATE_SEARCH_QUERY = 'UPDATE_SEARCH_QUERY';
+export function updateSearchQuery(searchQuery) {
   return {
     type: UPDATE_SEARCH_QUERY,
-    searchQuery
-  }
+    searchQuery,
+  };
 }
 
 // ERRORS
 
-export const FETCH_SOURCE_ERROR = 'FETCH_SOURCE_ERROR'
-export function fetchSourceError (msg) {
+export const FETCH_SOURCE_ERROR = 'FETCH_SOURCE_ERROR';
+export function fetchSourceError(msg) {
   return {
     type: FETCH_SOURCE_ERROR,
-    msg
-  }
+    msg,
+  };
 }

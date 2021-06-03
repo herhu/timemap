@@ -1,5 +1,5 @@
-import React from 'react'
+import React from 'react';
 
 export default ({ showing, children }) => {
-  return <div className={`cover-container ${showing ? 'showing' : ''}`}>{children}</div>
-}
+  return <div className={`cover-container ${showing ? 'showing' : ''}`}>{children}</div>;
+};

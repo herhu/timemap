@@ -1,12 +1,12 @@
-import React, { Fragment } from 'react'
-import DatetimeDot from './DatetimeDot.jsx'
-import DatetimeBar from './DatetimeBar.jsx'
-import DatetimeSquare from './DatetimeSquare.jsx'
-import DatetimeStar from './DatetimeStar.jsx'
-import Project from './Project.jsx'
-import { calcOpacity } from '../../../common/utilities'
+import React, { Fragment } from 'react';
+import DatetimeDot from './DatetimeDot.jsx';
+import DatetimeBar from './DatetimeBar.jsx';
+import DatetimeSquare from './DatetimeSquare.jsx';
+import DatetimeStar from './DatetimeStar.jsx';
+import Project from './Project.jsx';
+import { calcOpacity } from '../../../common/utilities';
 
-function renderDot (event, styles, props, idx) {
+function renderDot(event, styles, props, idx) {
   return (
     <DatetimeDot
       key={idx}
@@ -18,15 +18,15 @@ function renderDot (event, styles, props, idx) {
       r={props.eventRadius}
       styleProps={styles}
     />
-  )
+  );
 }
 
-function renderBar (event, styles, props, idx) {
+function renderBar(event, styles, props, idx) {
   const fillOpacity = props.features.GRAPH_NONLOCATED
     ? event.projectOffset >= 0
-        ? styles.opacity
-        : 0.5
-    : calcOpacity(1)
+      ? styles.opacity
+      : 0.5
+    : calcOpacity(1);
 
   return (
     <DatetimeBar
@@ -41,10 +41,10 @@ function renderBar (event, styles, props, idx) {
       styleProps={{ ...styles, fillOpacity }}
       highlights={props.highlights}
     />
-  )
+  );
 }
 
-function renderDiamond (event, styles, props, idx) {
+function renderDiamond(event, styles, props, idx) {
   return (
     <DatetimeSquare
       key={idx}
@@ -54,10 +54,10 @@ function renderDiamond (event, styles, props, idx) {
       r={1.8 * props.eventRadius}
       styleProps={styles}
     />
-  )
+  );
 }
 
-function renderStar (event, styles, props, idx) {
+function renderStar(event, styles, props, idx) {
   return (
     <DatetimeStar
       key={idx}
@@ -66,9 +66,9 @@ function renderStar (event, styles, props, idx) {
       y={props.y}
       r={1.8 * props.eventRadius}
       styleProps={{ ...styles, fillRule: 'nonzero' }}
-      transform='rotate(90)'
+      transform="rotate(90)"
     />
-  )
+  );
 }
 
 const TimelineEvents = ({
@@ -85,40 +85,40 @@ const TimelineEvents = ({
   features,
   setLoading,
   setNotLoading,
-  eventRadius
+  eventRadius,
 }) => {
-  const narIds = narrative ? narrative.steps.map((s) => s.id) : []
+  const narIds = narrative ? narrative.steps.map((s) => s.id) : [];
 
-  function renderEvent (event, idx) {
+  function renderEvent(event, idx) {
     if (narrative) {
       if (!narIds.includes(event.id)) {
-        return null
+        return null;
       }
     }
 
-    const isDot = (!!event.location && !!event.longitude) || (features.GRAPH_NONLOCATED && event.projectOffset !== -1)
-    let renderShape = isDot ? renderDot : renderBar
+    const isDot = (!!event.location && !!event.longitude) || (features.GRAPH_NONLOCATED && event.projectOffset !== -1);
+    let renderShape = isDot ? renderDot : renderBar;
 
     if (event.shape) {
       if (event.shape === 'bar') {
-        renderShape = renderBar
+        renderShape = renderBar;
       } else if (event.shape === 'diamond') {
-        renderShape = renderDiamond
+        renderShape = renderDiamond;
       } else if (event.shape === 'star') {
-        renderShape = renderStar
+        renderShape = renderStar;
       } else {
-        renderShape = renderDot
+        renderShape = renderDot;
       }
     }
 
-    const eventY = getY(event)
-    const colour = event.colour ? event.colour : getCategoryColor(event.category)
+    const eventY = getY(event);
+    const colour = event.colour ? event.colour : getCategoryColor(event.category);
 
     const styles = {
       fill: colour,
       fillOpacity: eventY > 0 ? calcOpacity(1) : 0,
-      transition: `transform ${transitionDuration / 1000}s ease`
-    }
+      transition: `transform ${transitionDuration / 1000}s ease`,
+    };
 
     return renderShape(
       event,
@@ -132,13 +132,13 @@ const TimelineEvents = ({
         highlights: features.HIGHLIGHT_GROUPS
           ? getHighlights(event.filters[features.HIGHLIGHT_GROUPS.filterIndexIndicatingGroup])
           : [],
-        features
+        features,
       },
       idx
-    )
+    );
   }
 
-  let renderProjects = () => null
+  let renderProjects = () => null;
 
   if (features.GRAPH_NONLOCATED) {
     renderProjects = () => {
@@ -156,16 +156,16 @@ const TimelineEvents = ({
             />
           ))}
         </>
-      )
-    }
+      );
+    };
   }
 
   return (
-    <g clipPath='url(#clip)'>
+    <g clipPath="url(#clip)">
       {renderProjects()}
       {events.map((event, idx) => renderEvent(event, idx))}
     </g>
-  )
-}
+  );
+};
 
-export default TimelineEvents
+export default TimelineEvents;
