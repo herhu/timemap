@@ -1,9 +1,8 @@
 const root =
-  process.env.NODE_ENV === 'production' ? 'https://hd.uniandes.edu.co/apps/datasheet-server' : 'http://localhost:4040';
+  process.env.NODE_ENV === 'production' ? 'https://enflujo.espejito.casa/violencia-policial' : 'http://localhost:4040';
 
 module.exports = {
-  title: 'example',
-  display_title: 'La geografía de la violencia policial',
+  display_title: 'CARTOGRAFÍA DE LA VIOLENCIA POLICIAL',
   SERVER_ROOT: root,
   CAIS_EXT: '/api/gvp/cais/rows',
   EVENTS_EXT: '/api/gvp/eventos/deeprows',
@@ -14,16 +13,13 @@ module.exports = {
   SHAPES_EXT: '',
   DATE_FMT: 'DD/MM/YYYY',
   TIME_FMT: 'hh:mm',
-  // MAPBOX_TOKEN: 'pk.YOUR_MAPBOX_TOKEN',
+  MAPBOX_TOKEN: 'pk.eyJ1IjoianVhbmNnb256YSIsImEiOiJja3BoaWJ0a3EwZXViMzFsYWllMGJiZHk0In0.P6r6Zi6Xx5NGK1kPK_9hcQ',
   store: {
     app: {
       language: 'es-MX',
       map: {
-        anchor: [4.6445491, -74.0686627],
+        anchor: [2.6445491, -74.0686627],
       },
-    },
-    ui: {
-      // tiles: 'your-mapbox-account-name/x5678-map-id'
     },
     features: {
       USE_CATEGORIES: true,
