@@ -1,7 +1,8 @@
 import React, { Component, createRef } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as d3 from 'd3';
+import { timeMinute, timeSecond } from 'd3-time';
+import { scaleTime } from 'd3-scale';
 import * as selectors from '../selectors';
 import { setLoading, setNotLoading } from '../actions';
 import hash from 'object-hash';
@@ -9,8 +10,6 @@ import hash from 'object-hash';
 import copy from '../common/data/copy.json';
 import Header from './presentational/Timeline/Header.jsx';
 import Axis from './TimelineAxis.jsx';
-import Clip from './presentational/Timeline/Clip.jsx';
-import ZoomControls from './presentational/Timeline/ZoomControls.jsx';
 import Markers from './presentational/Timeline/Markers.jsx';
 import Events from './presentational/Timeline/Events.jsx';
 import Categories from './TimelineCategories.jsx';
@@ -65,8 +64,7 @@ class Timeline extends Component {
   }
 
   makeScaleX() {
-    return d3
-      .scaleTime()
+    return scaleTime()
       .domain(this.state.timerange)
       .range([this.state.dims.marginLeft, this.state.dims.width - this.state.dims.width_controls]);
   }
@@ -100,7 +98,7 @@ class Timeline extends Component {
   }
 
   onClickArrow() {
-    this.setState((prevState, props) => {
+    this.setState((prevState) => {
       return { isFolded: !prevState.isFolded };
     });
   }
@@ -131,15 +129,15 @@ class Timeline extends Component {
   onMoveTime(direction) {
     this.props.methods.onSelect();
     const extent = this.getTimeScaleExtent();
-    const newCentralTime = d3.timeMinute.offset(this.state.scaleX.domain()[0], extent / 2);
+    const newCentralTime = timeMinute.offset(this.state.scaleX.domain()[0], extent / 2);
 
     // if forward
     let domain0 = newCentralTime;
-    let domainF = d3.timeMinute.offset(newCentralTime, extent);
+    let domainF = timeMinute.offset(newCentralTime, extent);
 
     // if backwards
     if (direction === 'backwards') {
-      domain0 = d3.timeMinute.offset(newCentralTime, -extent);
+      domain0 = timeMinute.offset(newCentralTime, -extent);
       domainF = newCentralTime;
     }
 
@@ -151,8 +149,8 @@ class Timeline extends Component {
   onCenterTime(newCentralTime) {
     const extent = this.getTimeScaleExtent();
 
-    const domain0 = d3.timeMinute.offset(newCentralTime, -extent / 2);
-    const domainF = d3.timeMinute.offset(newCentralTime, +extent / 2);
+    const domain0 = timeMinute.offset(newCentralTime, -extent / 2);
+    const domainF = timeMinute.offset(newCentralTime, +extent / 2);
 
     this.setState({ timerange: [domain0, domainF] }, () => {
       this.props.methods.onUpdateTimerange(this.state.timerange);
@@ -174,11 +172,11 @@ class Timeline extends Component {
    */
   onApplyZoom = (zoom) => {
     const extent = this.getTimeScaleExtent();
-    const newCentralTime = d3.timeMinute.offset(this.state.scaleX.domain()[0], extent / 2);
+    const newCentralTime = timeMinute.offset(this.state.scaleX.domain()[0], extent / 2);
     const { rangeLimits } = this.props.app.timeline;
 
-    let newDomain0 = d3.timeMinute.offset(newCentralTime, -zoom.duration / 2);
-    let newDomainF = d3.timeMinute.offset(newCentralTime, zoom.duration / 2);
+    let newDomain0 = timeMinute.offset(newCentralTime, -zoom.duration / 2);
+    let newDomainF = timeMinute.offset(newCentralTime, zoom.duration / 2);
 
     if (rangeLimits) {
       // If the store contains absolute time limits,
@@ -188,11 +186,11 @@ class Timeline extends Component {
 
       if (newDomain0 < minDate) {
         newDomain0 = minDate;
-        newDomainF = d3.timeMinute.offset(newDomain0, zoom.duration);
+        newDomainF = timeMinute.offset(newDomain0, zoom.duration);
       }
       if (newDomainF > maxDate) {
         newDomainF = maxDate;
-        newDomain0 = d3.timeMinute.offset(newDomainF, -zoom.duration);
+        newDomain0 = timeMinute.offset(newDomainF, -zoom.duration);
       }
     }
 
@@ -229,8 +227,8 @@ class Timeline extends Component {
     const timeShift = (drag0 - dragNow) / 1000;
 
     const { range, rangeLimits } = this.props.app.timeline;
-    let newDomain0 = d3.timeSecond.offset(range[0], timeShift);
-    let newDomainF = d3.timeSecond.offset(range[1], timeShift);
+    let newDomain0 = timeSecond.offset(range[0], timeShift);
+    let newDomainF = timeSecond.offset(range[1], timeShift);
 
     if (rangeLimits) {
       // If the store contains absolute time limits,

@@ -1,5 +1,8 @@
 import React from 'react';
-import * as d3 from 'd3';
+import { axisBottom } from 'd3-axis';
+import { timeFormat } from 'd3-time-format';
+import { select } from 'd3-selection';
+import transition from 'd3-transition';
 
 class TimelineAxis extends React.Component {
   constructor(props) {
@@ -28,27 +31,24 @@ class TimelineAxis extends React.Component {
     }
 
     if (this.props.scaleX) {
-      this.x0 = d3
-        .axisBottom(this.props.scaleX)
+      this.x0 = axisBottom(this.props.scaleX)
         .ticks(10)
         .tickPadding(0)
         .tickSize(this.props.dims.trackHeight)
-        .tickFormat(d3.timeFormat(fstFmt));
+        .tickFormat(timeFormat(fstFmt));
 
-      this.x1 = d3
-        .axisBottom(this.props.scaleX)
+      this.x1 = axisBottom(this.props.scaleX)
         .ticks(10)
         .tickPadding(this.props.dims.marginTop)
         .tickSize(0)
-        .tickFormat(d3.timeFormat(sndFmt));
+        .tickFormat(timeFormat(sndFmt));
 
       if (!this.state.isInitialized) this.setState({ isInitialized: true });
     }
 
     if (this.state.isInitialized) {
-      d3.select(this.xAxis0Ref.current).transition().duration(this.props.transitionDuration).call(this.x0);
-
-      d3.select(this.xAxis1Ref.current).transition().duration(this.props.transitionDuration).call(this.x1);
+      select(this.xAxis0Ref.current).transition().duration(this.props.transitionDuration).call(this.x0);
+      select(this.xAxis1Ref.current).transition().duration(this.props.transitionDuration).call(this.x1);
     }
   }
 

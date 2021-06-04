@@ -1,13 +1,16 @@
-import moment from 'moment';
-
 let { DATE_FMT, TIME_FMT } = process.env;
 if (!DATE_FMT) DATE_FMT = 'DD/MM/YYYY';
 if (!TIME_FMT) TIME_FMT = 'HH:mm';
 
 export function calcDatetime(date, time) {
   if (!time) time = '00:00';
-  const dt = moment(`${date} ${time}`, `${DATE_FMT} ${TIME_FMT}`);
-  return dt.toDate();
+  const formats = DATE_FMT.split('/');
+  date = date.split('/');
+  const dI = formats.indexOf('DD');
+  const mI = formats.indexOf('MM');
+  const yI = formats.indexOf('YYYY');
+
+  return new Date(`${date[yI]}-${date[mI]}-${date[dI]}:${time}`);
 }
 
 /**

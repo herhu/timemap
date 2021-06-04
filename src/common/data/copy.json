@@ -5,7 +5,7 @@
       "default": {
         "header": "Créditos",
         "intro": [
-          "Investigación de fuente abierta y análisis por [Cerosetenta](https://cerosetenta.uniandes.edu.co/)",
+          "Investigación de fuente abierta y análisis por <a href='https://cerosetenta.uniandes.edu.co/'>Cerosetenta</a>",
           "Software y espacialización por <a target='_blank' href='https://forensic-architecture.org/'>Forensic Architecture</a>."
         ],
         "notation": "",

@@ -14,7 +14,6 @@ import Map from './Map.jsx';
 import Timeline from './Timeline.jsx';
 
 // Interface components
-import MediaOverlay from './Overlay/Media.jsx';
 import LoadingOverlay from './Overlay/Loading.jsx';
 import Toolbar from './Toolbar/Layout.jsx';
 import CardStack from './CardStack.jsx';
@@ -22,8 +21,6 @@ import NarrativeControls from './presentational/Narrative/Controls.jsx';
 import InfoPopUp from './InfoPopup.jsx';
 import Notification from './Notification.jsx';
 import StateOptions from './StateOptions.jsx';
-import StaticPage from './StaticPage.jsx';
-import TemplateCover from './TemplateCover.jsx';
 import Search from './Search.jsx';
 
 class Layout extends Component {
@@ -264,25 +261,11 @@ class Layout extends Component {
     });
   };
 
-  wall() {
-    return (
-      <div className="muertos">
-        {this.state.muertos.map((nombre, idx) => (
-          <p key={`nombreMuerto-${idx}`} className="nombre">
-            {nombre}
-          </p>
-        ))}
-      </div>
-    );
-  }
-
   render() {
-    const { actions, app, domain, ui, features } = this.props;
-    // const muertos = this.state.muertos.length ? this.wall() : null;
+    const { actions, app, domain, ui } = this.props;
 
     return (
       <div>
-        {/* {muertos} */}
         {/* Este es el que contiene el menu y la historia */}
         <Toolbar
           isNarrative={!!app.associations.narrative}
@@ -366,26 +349,11 @@ class Layout extends Component {
           events={domain.events}
           onSearchRowClick={this.handleSelect}
         />
-        {app.source ? (
-          <MediaOverlay
-            source={app.source}
-            onCancel={() => {
-              actions.updateSource(null);
-            }}
-          />
-        ) : null}
         <LoadingOverlay
           isLoading={app.loading || app.flags.isFetchingDomain}
           ui={app.flags.isFetchingDomain}
           language={app.language}
         />
-        {features.USE_COVER && (
-          <StaticPage showing={app.flags.isCover}>
-            {/* enable USE_COVER in config.js features, and customise your header */}
-            {/* pass 'actions.toggleCover' as a prop to your custom header */}
-            <TemplateCover showing={app.flags.isCover} showAppHandler={actions.toggleCover} />
-          </StaticPage>
-        )}
       </div>
     );
   }

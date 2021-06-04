@@ -1,5 +1,6 @@
 import React, { Component, createRef, Fragment } from 'react';
-import * as d3 from 'd3';
+import { select } from 'd3-selection';
+import { drag } from 'd3-drag';
 
 class TimelineCategories extends Component {
   constructor(props) {
@@ -12,13 +13,12 @@ class TimelineCategories extends Component {
 
   componentDidUpdate() {
     if (!this.state.isInitialized) {
-      const drag = d3
-        .drag()
+      const dragEvents = drag()
         .on('start', this.props.onDragStart)
         .on('drag', this.props.onDrag)
         .on('end', this.props.onDragEnd);
 
-      d3.select(this.grabRef.current).call(drag);
+      select(this.grabRef.current).call(dragEvents);
 
       this.setState({ isInitialized: true });
     }
@@ -28,7 +28,6 @@ class TimelineCategories extends Component {
     const { features, dims } = this.props;
     const { category } = cat;
     const strokeWidth = 1; // dims.trackHeight / (this.props.categories.length + 1)
-    const color = this.props.getCategoryColor(category);
 
     if (
       features.GRAPH_NONLOCATED &&

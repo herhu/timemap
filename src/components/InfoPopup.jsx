@@ -1,5 +1,4 @@
 import React from 'react';
-import marked from 'marked';
 import copy from '../common/data/copy.json';
 
 export default ({ ui, app, methods }) => {
@@ -8,7 +7,7 @@ export default ({ ui, app, methods }) => {
     if (process.env.store && process.env.store.text && process.env.store.text.introCopy) {
       introCopy = process.env.store.text.introCopy;
     }
-    return introCopy.map((txt, i) => <p key={`p${i}`} dangerouslySetInnerHTML={{ __html: marked(txt) }} />);
+    return introCopy.map((txt, i) => <p key={`p${i}`} dangerouslySetInnerHTML={{ __html: txt }} />);
   }
 
   function renderHalfWithDot() {

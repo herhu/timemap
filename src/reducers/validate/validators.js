@@ -3,11 +3,6 @@ import Joi from 'joi';
 import createEventSchema from './eventSchema';
 import placeSchema from './placeSchema';
 import categorySchema from './categorySchema';
-import victimaSchema from './victimaSchema';
-import siteSchema from './siteSchema';
-import associationsSchema from './associationsSchema';
-import sourceSchema from './sourceSchema';
-import shapeSchema from './shapeSchema';
 
 import { calcDatetime, capitalize } from '../../common/utilities';
 
