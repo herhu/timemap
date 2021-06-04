@@ -24,7 +24,7 @@ jobs:
       - name: 🦅 Enviar por FTP
         uses: SamKirkland/FTP-Deploy-Action@4.0.0
         with:
-          server: ftp.cerosetenta.uniandes.edu.co
+          server: cerosetenta.uniandes.edu.co
           username: ${{ secrets.usuario_ftp }}
           server-dir: especiales/violencia-policial/
           local-dir: ./build/
