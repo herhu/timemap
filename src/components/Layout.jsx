@@ -47,7 +47,7 @@ class Layout extends Component {
         },
         segunda: {
           mapa: {
-            styleUrl: 'mapbox://styles/jeanniffer/ckoc8u49m1uz317l72cuudiz8?optimize=true',
+            styleUrl: 'mapbox://styles/juancgonza/ckphofn3b1i8q17ppt2bp7p3r?optimize=true',
             anchor: [-77.477, 1.012],
             startZoom: 5,
             minZoom: 6,
