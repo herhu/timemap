@@ -5,12 +5,12 @@ if (!TIME_FMT) TIME_FMT = 'HH:mm';
 export function calcDatetime(date, time) {
   if (!time) time = '00:00';
   const formats = DATE_FMT.split('/');
-  date = date.split('/');
+  const d = date.split('/');
   const dI = formats.indexOf('DD');
   const mI = formats.indexOf('MM');
   const yI = formats.indexOf('YYYY');
 
-  return new Date(`${date[yI]}-${date[mI]}-${date[dI]}:${time}`);
+  return new Date(d[yI], d[mI] - 1, d[dI]);
 }
 
 /**
