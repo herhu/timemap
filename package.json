@@ -11,7 +11,8 @@
     "test-watch": "ava --watch",
     "lint": "prettier --check \"src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
     "lint:fix": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
-    "analyze": "cross-env WEBPACK_ANALYZE=true NODE_ENV=production webpack --config webpack.prod.js"
+    "analyze": "cross-env WEBPACK_ANALYZE=true NODE_ENV=production webpack --config webpack.prod.js",
+    "stats": "cross-env NODE_ENV=production webpack --config webpack.prod.js --profile --json > compilation-stats.json"
   },
   "dependencies": {
     "d3-axis": "^2.1.0",
@@ -77,7 +78,10 @@
     "production": [
       ">0.2%",
       "not dead",
-      "not op_mini all"
+      "not op_mini all",
+      "not ie 11",
+      "not chrome < 51",
+      "not safari < 10"
     ],
     "development": [
       "last 1 chrome version",
