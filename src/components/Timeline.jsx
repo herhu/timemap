@@ -5,7 +5,6 @@ import { timeMinute, timeSecond } from 'd3-time';
 import { scaleTime } from 'd3-scale';
 import * as selectors from '../selectors';
 import { setLoading, setNotLoading } from '../actions';
-import hash from 'object-hash';
 
 import copy from '../common/data/copy.json';
 import Header from './presentational/Timeline/Header.jsx';
@@ -43,7 +42,7 @@ class Timeline extends Component {
     }
 
     if (this.props.app && this.props.app.timeline && this.props.app.timeline.range) {
-      if (hash(this.props.app.timeline.range) !== hash(this.state.timerange)) {
+      if (JSON.stringify(this.props.app.timeline.range) !== JSON.stringify(this.state.timerange)) {
         this.setState({
           timerange: this.props.app.timeline.range,
         });
@@ -52,8 +51,8 @@ class Timeline extends Component {
     }
 
     if (
-      hash(this.props.domain.categories) !== hash(prevProps.domain.categories) ||
-      hash(this.props.dimensions) !== hash(prevProps.dimensions)
+      JSON.stringify(this.props.domain.categories) !== JSON.stringify(prevProps.domain.categories) ||
+      JSON.stringify(this.props.dimensions) !== JSON.stringify(prevProps.dimensions)
     ) {
       const { trackHeight, marginTop } = this.props.dimensions;
       this.setState({

@@ -2,7 +2,6 @@
 import React, { Component, createRef } from 'react';
 import { connect } from 'react-redux';
 import * as selectors from '../selectors';
-import hash from 'object-hash';
 import mapboxgl from 'mapbox-gl';
 
 class Map extends Component {
@@ -83,23 +82,33 @@ class Map extends Component {
         categoriasCargadas: true,
       });
     }
+
+    const validateEventChange = (current, previous) => {
+      if (current.length) {
+        if (!previous.length) {
+          return true;
+        } else if (current.length !== previous.length) {
+          return true;
+        } else if (current[0].id !== previous[0].id) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+
+      return false;
+    };
+
     if (this.state.puntosCargados && this.props.app && this.props.app.map) {
-      // Set appropriate zoom for narrative
-      const { bounds } = this.props.app.map;
+      if (validateEventChange(this.props.app.selected, prevProps.app.selected)) {
+        // Fly to first  of events selected
+        const eventPoint = this.props.app.selected.length > 0 ? this.props.app.selected[0] : null;
 
-      if (hash(bounds) !== hash(prevProps.app.map.bounds) && bounds !== null) {
-        this.map.fitBounds(bounds);
-      } else {
-        if (hash(this.props.app.selected) !== hash(prevProps.app.selected)) {
-          // Fly to first  of events selected
-          const eventPoint = this.props.app.selected.length > 0 ? this.props.app.selected[0] : null;
-
-          if (eventPoint !== null && eventPoint.latitude && eventPoint.longitude) {
-            this.map.flyTo({
-              center: [eventPoint.longitude, eventPoint.latitude],
-              zoom: 18,
-            });
-          }
+        if (eventPoint !== null && eventPoint.latitude && eventPoint.longitude) {
+          this.map.flyTo({
+            center: [eventPoint.longitude, eventPoint.latitude],
+            zoom: 18,
+          });
         }
       }
     }

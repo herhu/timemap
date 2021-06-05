@@ -2,6 +2,7 @@ import React from 'react';
 import { axisBottom } from 'd3-axis';
 import { timeFormat } from 'd3-time-format';
 import { select } from 'd3-selection';
+// Toca importarlo para que funcione select().translation()
 import transition from 'd3-transition';
 
 class TimelineAxis extends React.Component {
