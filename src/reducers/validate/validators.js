@@ -1,201 +1,80 @@
-import Joi from 'joi';
+import eventSchema from './schemas/event';
+import categorySchema from './schemas/category';
 
-import createEventSchema from './eventSchema';
-import placeSchema from './placeSchema';
-import categorySchema from './categorySchema';
+import { calcDatetime, isValidDate } from '../../common/utilities';
 
-import { calcDatetime, capitalize } from '../../common/utilities';
-
-/*
- * Create an error notification object
- * Types: ['error', 'warning', 'good', 'neural']
+/**
+ * Limpia los datos que llegan del API y descarta todos los items que no pasen la validación.
+ *
+ * @param {Object} domain Datos agregados de los diferentes endpoints del API.
+ * @returns Datos que pasan validación.
  */
-function makeError(type, id, message) {
-  return {
-    type: 'error',
-    id,
-    message: `${type} ${id}: ${message}`,
-  };
-}
-
-function isValidDate(d) {
-  return d instanceof Date && !isNaN(d);
-}
-
-function findDuplicateAssociations(associations) {
-  const seenSet = new Set([]);
-  const duplicates = [];
-  associations.forEach((item) => {
-    if (seenSet.has(item.id)) {
-      duplicates.push({
-        id: item.id,
-        error: makeError('Association', item.id, 'association was found more than once. Ignoring duplicate.'),
-      });
-    } else {
-      seenSet.add(item.id);
-    }
-  });
-  return duplicates;
-}
-
-/*
- * Validate domain schema
- */
-export function validateDomain(domain, features) {
+export function validateDomain(domain) {
+  // La nueva estructura sólo con datos validados. Esta es la que devuelve la función.
   const sanitizedDomain = {
     events: [],
-    cais: [],
     categories: [],
-    victimas: [],
-    // sites: [],
-    associations: [],
-    // sources: {},
-    // shapes: [],
-    notifications: domain ? domain.notifications : null,
   };
 
+  // Si no hay datos del API, salir de acá inmediatamente y devolver los arrays vacios.
   if (domain === undefined) {
     return sanitizedDomain;
   }
 
-  const discardedDomain = {
-    events: [],
-    cais: [],
-    categories: [],
-    victimas: [],
-  };
+  // Acumula los errores que se van generando para luego imprimirlos en la consola.
+  const errors = [];
+  // Contiene las categorias que se encuentran en los eventos, sirve para comparar con lista de categorias completa.
+  const categoriasUsadas = [];
 
-  function validateArrayItem(item, domainKey, schema) {
-    const { error, value } = schema.validate(item);
-
-    if (error) {
-      const id = item.id || '-';
-      const domainStr = capitalize(domainKey);
-      const err = makeError(domainStr, id, error.message);
-
-      discardedDomain[domainKey].push(Object.assign(item, { err }));
-    } else {
-      sanitizedDomain[domainKey].push(value);
-    }
-  }
-
-  function validateArray(items, domainKey, schema) {
+  /**
+   * Valida cada elemento contenido en la respuesta de un endpoint del API.
+   *
+   * @param {Array} items Los elementos que llegan de un endpoint del API.
+   * @param {String} domainKey Nombre de la llave en estructura de sanitizedDomain.
+   * @param {Function} schema El esquema que valida cada item dendtro del Array (estos se encuentran en ./schemas/...)
+   */
+  const validateArray = (items, domainKey, schema) => {
     items.forEach((item) => {
-      validateArrayItem(item, domainKey, schema);
-    });
-  }
-
-  function validateObject(obj, domainKey, itemSchema) {
-    Object.keys(obj).forEach((key) => {
-      const vl = obj[key];
-      const result = Joi.validate(vl, itemSchema);
-      if (result.error !== null) {
-        const id = vl.id || '-';
-        const domainStr = capitalize(domainKey);
-        discardedDomain[domainKey].push({
-          ...vl,
-          error: makeError(domainStr, id, result.error.message),
-        });
-      } else {
-        sanitizedDomain[domainKey][key] = vl;
+      if (schema(item, { errors })) {
+        sanitizedDomain[domainKey].push(item);
       }
     });
-  }
+  };
 
-  if (!Array.isArray(features.CUSTOM_EVENT_FIELDS)) {
-    features.CUSTOM_EVENT_FIELDS = [];
-  }
-
-  // domain.victimas
-  //   .filter((v) => v.latitude && v.longitude)
-  //   .forEach((v) => {
-  //     const ret = {
-  //       id: v.id,
-  //       location: v.lugar,
-  //       category: 'Muerto',
-  //       date: v.fecha,
-  //       description: v.descripcion,
-  //       fuente: v.fuente,
-  //       nombre: v.nombre,
-  //     };
-
-  //     if (v.latitude) ret.latitude = v.latitude;
-  //     if (v.longitude) ret.longitude = v.longitude;
-  //     domain.eventos.push(ret);
-  //   });
-
-  domain.eventos.forEach((evento) => {
-    const match = domain.cais.find((cai) => cai.name === evento.location);
-
-    if (match) evento.location = `${evento.location} (${match.localidad})`;
-  });
-
-  const eventSchema = createEventSchema(features.CUSTOM_EVENT_FIELDS);
+  // Ejecutar validaciones
   validateArray(domain.eventos, 'events', eventSchema);
-  validateArray(domain.cais, 'cais', placeSchema);
-  // validateArray(domain.filters, 'filters', Joi.string());
   validateArray(domain.categories, 'categories', categorySchema);
-  // validateArray(domain.sites, 'sites', siteSchema);
-  // validateArray(domain.associations, 'associations', associationsSchema);
-  // validateObject(domain.sources, 'sources', sourceSchema);
-  // validateObject(domain.shapes, 'shapes', shapeSchema);
 
-  // NB: [lat, lon] array is best format for projecting into map
-  // sanitizedDomain.shapes = sanitizedDomain.shapes.map((shape) => ({
-  //   name: shape.name,
-  //   points: shape.items.map((coords) => coords.replace(/\s/g, '').split(',')),
-  // }));
-
-  // const duplicateAssociations = findDuplicateAssociations(domain.associations);
-  // // Duplicated associations
-  // if (duplicateAssociations.length > 0) {
-  //   sanitizedDomain.notifications.push({
-  //     message: `Associations are required to be unique. Ignoring duplicates for now.`,
-  //     items: duplicateAssociations,
-  //     type: 'error',
-  //   });
-  // }
-  // sanitizedDomain.associations = domain.associations;
-
-  // append events with datetime and sort
-
-  const categoriasUsadas = [];
+  // Filtrar los eventos que tienen fechas validas.
   sanitizedDomain.events = sanitizedDomain.events.filter((event, idx) => {
+    // Acumular las categorias que si se usan en los eventos para filtrar luego las categorias.
     if (!categoriasUsadas.includes(event.category)) categoriasUsadas.push(event.category);
 
+    // Darle un id único a cada evento.
     event.id = idx;
+    // Crear un nuevo campo con fecha valida de JS.
     event.datetime = calcDatetime(event.date, event.time);
+
+    // Si no logra generar una fecha valida, sumar a los errores y eliminar evento del array.
     if (!isValidDate(event.datetime)) {
-      discardedDomain.events.push({
-        ...event,
-        error: makeError(
-          'event',
-          event.id,
-          "Invalid date. It's been dropped, as otherwise timemap won't work as expected."
-        ),
-      });
+      errors.push(`Invalid date (${event.date}) in event with description: ${event.description}`);
       return false;
     }
 
+    // Si logra pasar validación de fecha, aceptar evento.
     return true;
   });
 
-  sanitizedDomain.categories = sanitizedDomain.categories.filter(({ category }) => {
-    return categoriasUsadas.includes(category);
-  });
+  // Filtrar lista de categorias con las que si se están usando en los eventos.
+  sanitizedDomain.categories = sanitizedDomain.categories.filter(({ category }) => categoriasUsadas.includes(category));
 
+  // Ordenar eventos por fecha.
   sanitizedDomain.events.sort((a, b) => a.datetime - b.datetime);
-  // Message the number of failed items in domain
-  Object.keys(discardedDomain).forEach((disc) => {
-    const len = discardedDomain[disc].length;
-    if (len) {
-      sanitizedDomain.notifications.push({
-        message: `${len} invalid ${disc} not displayed.`,
-        items: discardedDomain[disc],
-        type: 'error',
-      });
-    }
-  });
+
+  // Imprimir errores acumulados en el proceso.
+  if (errors.length) {
+    console.error(`Validation errors:\n${errors.join(`\n`)}`);
+  }
 
   return sanitizedDomain;
 }
