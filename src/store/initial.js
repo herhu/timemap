@@ -1,4 +1,4 @@
-import { mergeDeepLeft } from 'ramda';
+import { mergeDeep } from '../common/utilities';
 import global from '../common/global';
 
 const initial = {
@@ -156,7 +156,7 @@ const initial = {
 
 let appStore;
 if (process.env.store) {
-  appStore = mergeDeepLeft(process.env.store, initial);
+  appStore = mergeDeep(initial, process.env.store);
 } else {
   appStore = initial;
 }
