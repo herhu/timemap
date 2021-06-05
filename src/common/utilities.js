@@ -1,16 +1,23 @@
 let { DATE_FMT, TIME_FMT } = process.env;
 if (!DATE_FMT) DATE_FMT = 'DD/MM/YYYY';
-if (!TIME_FMT) TIME_FMT = 'HH:mm';
+if (!TIME_FMT) TIME_FMT = 'hh:mm';
 
 export function calcDatetime(date, time) {
   if (!time) time = '00:00';
-  const formats = DATE_FMT.split('/');
+  const formats = {
+    date: DATE_FMT.split('/'),
+    time: TIME_FMT.split(':'),
+  };
   const d = date.split('/');
-  const dI = formats.indexOf('DD');
-  const mI = formats.indexOf('MM');
-  const yI = formats.indexOf('YYYY');
+  const t = time.split(':');
+  const dI = formats.date.indexOf('DD');
+  const mI = formats.date.indexOf('MM');
+  const yI = formats.date.indexOf('YYYY');
+  const hoursI = formats.time.indexOf('hh');
+  const minutesI = formats.time.indexOf('mm');
 
-  return new Date(d[yI], d[mI] - 1, d[dI]);
+  // Months go from 0-11, ergo the -1 in months.
+  return new Date(d[yI], d[mI] - 1, d[dI], t[hoursI], t[minutesI]);
 }
 
 /**
@@ -224,4 +231,8 @@ export function makeNiceDate(datetime) {
   const [{ value: month }, , { value: day }, , { value: year }] = dateTimeFormat.formatToParts(datetime);
 
   return `${day} ${month}, ${year}`;
+}
+
+export function isValidDate(d) {
+  return d instanceof Date && !isNaN(d);
 }
