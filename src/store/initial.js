@@ -67,7 +67,8 @@ const initial = {
         contentHeight: 200,
         width_controls: 80,
       },
-      range: [new Date(2021, 3, 4, 11), new Date(2021, 5, 1, 9)],
+      // El formato es new Date(YYYY, M, D). ¡El Mes (M) va de 0 a 11, siempre le restamos 1 al mes como lo conocemos (ej: Enero es 0, Junio es 5, etc.)!
+      range: [new Date(2021, 3, 4), new Date(2021, 5, 30)],
       // rangeLimits: [new Date(1, 1, 1, 1), new Date()],
       zoomLevels: [
         { label: '20 años', duration: 10512000 },
