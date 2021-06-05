@@ -39,9 +39,6 @@
   &.show {
     z-index: $map;
   }
-  &.narrative-mode {
-    left: 0;
-  }
 
   .event {
     fill: $event_default;
@@ -76,15 +73,6 @@
     position: fixed;
     top: 0px;
     left: 110px;
-  }
-
-  &.narrative-mode {
-    .sites-layer,
-    .shapes-layer {
-      position: fixed;
-      top: 0px;
-      left: 0px;
-    }
   }
 }
 
@@ -185,9 +173,6 @@
   opacity: 1;
 }
 
-.narrative-mode {
-}
-
 .location-event {
   cursor: pointer;
 }
@@ -202,10 +187,6 @@
   }
 }
 
-.narrative-step-arrow {
-  pointer-events: all !important;
-}
-
 .path-polyline {
   stroke: $darkgrey;
   stroke-width: 2px;
@@ -213,16 +194,6 @@
 
 .no-hover {
   cursor: grab;
-}
-
-// no hover styles for events when in narrative mode
-.narrative-mode {
-  .event-hover:hover {
-    opacity: 0;
-  }
-  .no-hover {
-    cursor: inherit;
-  }
 }
 
 .place-cai {

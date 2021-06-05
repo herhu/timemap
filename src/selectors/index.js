@@ -1,13 +1,11 @@
 import { createSelector } from 'reselect';
 import { insetSourceFrom, dateMin, dateMax } from '../common/utilities';
 import { isTimeRangedIn } from './helpers';
-import { FILTER_MODE, NARRATIVE_MODE } from '../common/constants';
+import { FILTER_MODE } from '../common/constants';
 
 // Input selectors
 export const getEvents = (state) => state.domain.events;
 export const getCategories = (state) => state.domain.categories;
-export const getNarratives = (state) => state.domain.associations.filter((item) => item.mode === NARRATIVE_MODE);
-export const getActiveNarrative = (state) => state.app.associations.narrative;
 export const getSelected = (state) => state.app.selected;
 export const getSites = (state) => state.domain.sites;
 export const getSources = (state) => state.domain.sources;
@@ -18,7 +16,6 @@ export const getActiveFilters = (state) => state.app.associations.filters;
 export const getActiveCategories = (state) => state.app.associations.categories;
 export const getTimeRange = (state) => state.app.timeline.range;
 export const getTimelineDimensions = (state) => state.app.timeline.dimensions;
-export const selectNarrative = (state) => state.app.associations.narrative;
 export const getFeatures = (state) => state.features;
 export const getEventRadius = (state) => state.ui.eventRadius;
 
@@ -65,79 +62,6 @@ export const selectEvents = createSelector(
       return acc;
     }, []);
   }
-);
-
-/**
- * Of all available events, selects those that fall within the time range,
- * and if filters are being used, select them if their filters are enabled
- */
-export const selectNarratives = createSelector(
-  [getEvents, getNarratives, getSources, getFeatures],
-  (events, narrativesMeta, sources, features) => {
-    if (Array.isArray(narrativesMeta) && narrativesMeta.length === 0) {
-      return [];
-    }
-    const narratives = {};
-    const narrativeSkeleton = (id) => ({ id, steps: [] });
-
-    /* populate narratives dict with events */
-    events.forEach((evt) => {
-      evt.associations.forEach((association) => {
-        const foundNarrative = narrativesMeta.find((narr) => narr.id === association);
-        if (foundNarrative) {
-          const { id: narrId } = foundNarrative;
-          // initialise
-          if (!narratives[narrId]) {
-            narratives[narrId] = narrativeSkeleton(narrId);
-          }
-          // add evt to steps
-          // NB: insetSourceFrom is a 'curried' function to allow with maps
-          narratives[narrId].steps.push(insetSourceFrom(sources)(evt));
-        }
-      });
-    });
-    /* sort steps by time */
-    Object.keys(narratives).forEach((key) => {
-      const steps = narratives[key].steps;
-
-      steps.sort((a, b) => a.datetime - b.datetime);
-
-      const existingAssociatedNarrative = narrativesMeta.find((n) => n.id === key);
-
-      if (existingAssociatedNarrative) {
-        narratives[key] = {
-          ...existingAssociatedNarrative,
-          ...narratives[key],
-        };
-      }
-    });
-    // Return narratives in original order
-    // + filter those that are undefined
-    return narrativesMeta.map((n) => narratives[n.id]).filter((d) => d);
-  }
-);
-
-/** We iterate through narrative.steps and check the idx there against the selected array and we return the idx */
-export const selectNarrativeIdx = createSelector([getSelected, getActiveNarrative], (selected, narrative) => {
-  // Only one event selected in narrative mode
-  if (narrative === null) return -1;
-
-  const selectedEvent = selected[0];
-  let selectedIdx;
-
-  narrative.steps.forEach((step, idx) => {
-    if (selectedEvent.id === step.id) {
-      selectedIdx = idx;
-    }
-  });
-  return selectedIdx;
-});
-
-/** Aggregate information about the narrative and the current step into
- *  a single object. If narrative is null, the whole object is null.
- */
-export const selectActiveNarrative = createSelector([getActiveNarrative, selectNarrativeIdx], (narrative, current) =>
-  narrative ? { ...narrative, current } : null
 );
 
 /**

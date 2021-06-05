@@ -9,10 +9,6 @@
   z-index: $header;
   background: $midgrey;
 
-  &.narrative-mode {
-    left: -$toolbar-width;
-  }
-
   .toolbar {
     position: relative;
     width: $toolbar-width;

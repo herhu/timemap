@@ -323,7 +323,7 @@ class Map extends Component {
   }
 
   render() {
-    const classes = this.props.app.narrative ? 'map-wrapper narrative-mode' : 'map-wrapper';
+    const classes = 'map-wrapper';
 
     return (
       <div className={classes} onKeyDown={this.props.onKeyDown} tabIndex="0">
@@ -337,7 +337,6 @@ function mapStateToProps(state) {
   return {
     domain: {
       locations: selectors.selectLocations(state),
-      narratives: selectors.selectNarratives(state),
       categories: selectors.getCategories(state),
       sites: selectors.selectSites(state),
       shapes: selectors.selectShapes(state),
@@ -348,7 +347,6 @@ function mapStateToProps(state) {
       selected: selectors.selectSelected(state),
       highlighted: state.app.highlighted,
       map: state.app.map,
-      narrative: state.app.associations.narrative,
       flags: {
         isShowingSites: state.app.flags.isShowingSites,
       },
@@ -356,7 +354,6 @@ function mapStateToProps(state) {
     ui: {
       tiles: state.ui.tiles,
       dom: state.ui.dom,
-      narratives: state.ui.style.narratives,
       mapSelectedEvents: state.ui.style.selectedEvents,
       shapes: state.ui.style.shapes,
       eventRadius: state.ui.eventRadius,

@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 import * as selectors from '../selectors';
 import colors from '../common/global';
-import { binarySearch, insetSourceFrom } from '../common/utilities';
+import { binarySearch } from '../common/utilities';
 
 // Interface sections
 import Map from './Map.jsx';
@@ -17,10 +17,8 @@ import Timeline from './Timeline.jsx';
 import LoadingOverlay from './Overlay/Loading.jsx';
 import Toolbar from './Toolbar/Layout.jsx';
 import CardStack from './CardStack.jsx';
-import NarrativeControls from './presentational/Narrative/Controls.jsx';
 import InfoPopUp from './InfoPopup.jsx';
 import Notification from './Notification.jsx';
-import StateOptions from './StateOptions.jsx';
 import Search from './Search.jsx';
 
 class Layout extends Component {
@@ -141,100 +139,15 @@ class Layout extends Component {
     }
   };
 
-  setNarrative = (narrative) => {
-    // only handleSelect if narrative is not null and has associated events
-    if (narrative && narrative.steps.length >= 1) {
-      this.handleSelect([narrative.steps[0]]);
-    }
-    this.props.actions.updateNarrative(narrative);
-  };
-
-  setNarrativeFromFilters = (withSteps) => {
-    const { app, domain } = this.props;
-    let activeFilters = app.associations.filters;
-
-    if (activeFilters.length === 0) {
-      alert('No filters selected, cant narrativise');
-      return;
-    }
-
-    activeFilters = activeFilters.map((f) => ({ name: f }));
-
-    const evs = domain.events.filter((ev) => {
-      let hasOne = false;
-      // add event if it has at least one matching filter
-      for (let i = 0; i < activeFilters.length; i++) {
-        if (ev.associations.includes(activeFilters[i].name)) {
-          hasOne = true;
-          break;
-        }
-      }
-      if (hasOne) return true;
-      return false;
-    });
-
-    if (evs.length === 0) {
-      alert('No associated events, cant narrativise');
-      return;
-    }
-
-    const name = activeFilters.map((f) => f.name).join('-');
-    const desc = activeFilters.map((f) => f.description).join('\n\n');
-    this.setNarrative({
-      id: name,
-      label: name,
-      description: desc,
-      withLines: withSteps,
-      steps: evs.map(insetSourceFrom(domain.sources)),
-    });
-  };
-
-  selectNarrativeStep = (idx) => {
-    // Try to find idx if event passed rather than number
-    if (typeof idx !== 'number') {
-      let e = idx[0] || idx;
-
-      if (this.props.app.associations.narrative) {
-        const { steps } = this.props.app.associations.narrative;
-        // choose the first event at a given location
-        const locationEventId = e.id;
-        const narrativeIdxObj = steps.find((s) => s.id === locationEventId);
-        let narrativeIdx = steps.indexOf(narrativeIdxObj);
-
-        if (narrativeIdx > -1) {
-          idx = narrativeIdx;
-        }
-      }
-    }
-
-    const { narrative } = this.props.app.associations;
-    if (narrative === null) return;
-
-    if (idx < narrative.steps.length && idx >= 0) {
-      const step = narrative.steps[idx];
-
-      this.handleSelect([step]);
-      this.props.actions.updateNarrativeStepIdx(idx);
-    }
-  };
-
   onKeyDown = (e) => {
-    const { narrative, selected } = this.props.app;
+    const { selected } = this.props.app;
     const { events } = this.props.domain;
 
     const prev = (idx) => {
-      if (narrative === null) {
-        this.handleSelect(events[idx - 1], 0);
-      } else {
-        this.selectNarrativeStep(this.props.narrativeIdx - 1);
-      }
+      this.handleSelect(events[idx - 1], 0);
     };
     const next = (idx) => {
-      if (narrative === null) {
-        this.handleSelect(events[idx + 1], 0);
-      } else {
-        this.selectNarrativeStep(this.props.narrativeIdx + 1);
-      }
+      this.handleSelect(events[idx + 1], 0);
     };
     if (selected.length > 0) {
       const ev = selected[selected.length - 1];
@@ -268,7 +181,6 @@ class Layout extends Component {
       <div>
         {/* Este es el que contiene el menu y la historia */}
         <Toolbar
-          isNarrative={!!app.associations.narrative}
           historiaActual={this.state.historiaActual}
           propiedadesMapa={this.state.historias[this.state.historiaActual].mapa}
           actualizarHistoria={this.actualizarHistoria}
@@ -276,7 +188,6 @@ class Layout extends Component {
             onTitle: actions.toggleCover,
             onSelectFilter: (filter) => actions.toggleFilter('filters', filter),
             onCategoryFilter: (category) => actions.toggleFilter('categories', category),
-            onSelectNarrative: this.setNarrative,
           }}
         />
         {/* Acá esta la instancia del mapa */}
@@ -285,15 +196,14 @@ class Layout extends Component {
           propiedadesMapa={this.state.historias[this.state.historiaActual].mapa}
           onKeyDown={this.onKeyDown}
           methods={{
-            onSelectNarrative: this.setNarrative,
             getCategoryColor: this.getCategoryColor,
-            onSelect: app.associations.narrative ? this.selectNarrativeStep : (ev) => this.handleSelect(ev, 1),
+            onSelect: (ev) => this.handleSelect(ev, 1),
           }}
         />
         <Timeline
           onKeyDown={this.onKeyDown}
           methods={{
-            onSelect: app.associations.narrative ? this.selectNarrativeStep : (ev) => this.handleSelect(ev, 0),
+            onSelect: (ev) => this.handleSelect(ev, 0),
             onUpdateTimerange: actions.updateTimeRange,
             getCategoryColor: this.getCategoryColor,
           }}
@@ -301,35 +211,10 @@ class Layout extends Component {
         <CardStack
           timelineDims={app.timeline.dimensions}
           onViewSource={this.handleViewSource}
-          onSelect={app.associations.narrative ? this.selectNarrativeStep : this.handleSelect}
+          onSelect={this.handleSelect}
           onHighlight={this.handleHighlight}
           onToggleCardstack={() => actions.updateSelected([])}
           getCategoryColor={this.getCategoryColor}
-        />
-        <StateOptions
-          showing={
-            this.props.narratives &&
-            this.props.narratives.length !== 0 &&
-            !app.associations.narrative &&
-            app.associations.filters.length > 0
-          }
-          timelineDims={app.timeline.dimensions}
-          onClickHandler={this.setNarrativeFromFilters}
-        />
-        <NarrativeControls
-          narrative={
-            app.associations.narrative
-              ? {
-                  ...app.associations.narrative,
-                  current: this.props.narrativeIdx,
-                }
-              : null
-          }
-          methods={{
-            onNext: () => this.selectNarrativeStep(this.props.narrativeIdx + 1),
-            onPrev: () => this.selectNarrativeStep(this.props.narrativeIdx - 1),
-            onSelectNarrative: this.setNarrative,
-          }}
         />
         <InfoPopUp
           ui={ui}
@@ -343,12 +228,7 @@ class Layout extends Component {
           notifications={domain.notifications}
           onToggle={actions.markNotificationsRead}
         />
-        <Search
-          narrative={app.narrative}
-          queryString={app.searchQuery}
-          events={domain.events}
-          onSearchRowClick={this.handleSelect}
-        />
+        <Search queryString={app.searchQuery} events={domain.events} onSearchRowClick={this.handleSelect} />
         <LoadingOverlay
           isLoading={app.loading || app.flags.isFetchingDomain}
           ui={app.flags.isFetchingDomain}
@@ -368,8 +248,6 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   (state) => ({
     ...state,
-    narrativeIdx: selectors.selectNarrativeIdx(state),
-    narratives: selectors.selectNarratives(state),
     selected: selectors.selectSelected(state),
   }),
   mapDispatchToProps

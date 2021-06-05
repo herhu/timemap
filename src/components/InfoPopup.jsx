@@ -72,8 +72,6 @@ export default ({ ui, app, methods }) => {
           points="
           8.376,63.723 47.287,63.723 60,46 80,46 "
         />
-        {/* <line stroke={strokeFill} strokeWidth='2' strokeLinecap='round' strokeLinejoin='round' x1='33.723' y1='59.663' x2='39.069' y2='63.723' /> */}
-        {/* <line stroke={strokeFill} strokeWidth='2' strokeLinecap='round' strokeLinejoin='round' x1='33.723' y1='67.782' x2='39.069' y2='63.723' /> */}
         <line
           stroke={strokeFill}
           strokeWidth="2"

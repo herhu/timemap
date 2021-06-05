@@ -25,11 +25,6 @@ $timeline-height: 170px;
     }
   }
 
-  &.narrative-mode {
-    left: 0;
-    transition: left 0.2s ease;
-  }
-
   .timeline-header {
     height: 0px;
     width: 100%;

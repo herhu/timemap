@@ -15,13 +15,6 @@
   overflow-x: hidden;
   overflow-y: auto;
 
-  &.narrative-mode {
-    right: $card-right;
-    left: auto;
-    top: $narrative-info-height + 32px;
-    height: calc(100% - #{$narrative-info-height} - #{$timeline-height} - 32px);
-  }
-
   &.full-height {
     max-height: calc(100% - 20px);
   }

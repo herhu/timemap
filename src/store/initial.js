@@ -36,7 +36,6 @@ const initial = {
     source: null,
     associations: {
       filters: [],
-      narrative: null,
       categories: [],
       views: {
         events: true,
@@ -119,13 +118,6 @@ const initial = {
         //'Otras agresiones': '#774ba3',
         'Conducta sospechosa policía': '#86f7f2',
         'Policía disparando arma de fuego': '#78548a',
-      },
-      narratives: {
-        default: {
-          opacity: 0.9,
-          stroke: global.fallbackEventColor,
-          strokeWidth: 3,
-        },
       },
       shapes: {
         default: {

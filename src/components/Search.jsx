@@ -47,7 +47,7 @@ class Search extends React.Component {
     }
 
     return (
-      <div className={'search-outer-container' + (this.props.narrative ? ' narrative-mode ' : '')}>
+      <div className="search-outer-container">
         <div id="search-bar-icon-container" onClick={this.onButtonClick}>
           <i className="material-icons">search</i>
         </div>

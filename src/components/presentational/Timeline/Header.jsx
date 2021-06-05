@@ -1,7 +1,7 @@
 import React from 'react';
 import { makeNiceDate } from '../../../common/utilities';
 
-const TimelineHeader = ({ title, from, to, onClick, hideInfo }) => {
+const TimelineHeader = ({ title, from, to, onClick }) => {
   const d0 = from && makeNiceDate(from);
   const d1 = to && makeNiceDate(to);
   return (
@@ -11,7 +11,7 @@ const TimelineHeader = ({ title, from, to, onClick, hideInfo }) => {
           <i className="arrow-down" />
         </p>
       </div>
-      <div className={`timeline-info ${hideInfo ? 'hidden' : ''}`}>
+      <div className="timeline-info">
         <p>{title}</p>
         <p>
           {d0} - {d1}

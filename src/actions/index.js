@@ -250,22 +250,6 @@ export function updateDimensions(dims) {
   };
 }
 
-export const UPDATE_NARRATIVE = 'UPDATE_NARRATIVE';
-export function updateNarrative(narrative) {
-  return {
-    type: UPDATE_NARRATIVE,
-    narrative,
-  };
-}
-
-export const UPDATE_NARRATIVE_STEP_IDX = 'UPDATE_NARRATIVE_STEP_IDX';
-export function updateNarrativeStepIdx(idx) {
-  return {
-    type: UPDATE_NARRATIVE_STEP_IDX,
-    idx,
-  };
-}
-
 export const UPDATE_SOURCE = 'UPDATE_SOURCE';
 export function updateSource(source) {
   return {

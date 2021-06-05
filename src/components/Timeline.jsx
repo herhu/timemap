@@ -285,9 +285,8 @@ class Timeline extends Component {
 
   render() {
     if (!this.props.domain.events.length) return null;
-    const { isNarrative, app } = this.props;
+
     let classes = `timeline-wrapper ${this.state.isFolded ? ' folded' : ''}`;
-    classes += app.narrative !== null ? ' narrative-mode' : '';
     const { dims } = this.state;
     const foldedStyle = { bottom: this.state.isFolded ? -dims.height : '58px' };
     const heightStyle = { height: dims.height };
@@ -304,7 +303,6 @@ class Timeline extends Component {
           onClick={() => {
             this.onClickArrow();
           }}
-          hideInfo={isNarrative}
         />
         <div className="timeline-content" style={heightStyle}>
           <div id={this.props.ui.dom.timeline} className="timeline" style={contentHeight}>
@@ -346,7 +344,6 @@ class Timeline extends Component {
                 events={this.props.domain.events}
                 projects={this.props.domain.projects}
                 styleDatetime={this.styleDatetime}
-                narrative={this.props.app.narrative}
                 getDatetimeX={this.getDatetimeX}
                 getY={this.getY}
                 getHighlights={(group) => {
@@ -375,18 +372,15 @@ class Timeline extends Component {
 function mapStateToProps(state) {
   return {
     dimensions: selectors.selectDimensions(state),
-    isNarrative: !!state.app.associations.narrative,
     domain: {
       events: selectors.selectStackedEvents(state),
       projects: selectors.selectProjects(state),
       categories: selectors.getCategories(state),
-      narratives: state.domain.narratives,
     },
     app: {
       selected: state.app.selected,
       language: state.app.language,
       timeline: state.app.timeline,
-      narrative: state.app.associations.narrative,
     },
     ui: {
       dom: state.ui.dom,

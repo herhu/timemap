@@ -74,7 +74,6 @@ function renderStar(event, styles, props, idx) {
 const TimelineEvents = ({
   events,
   projects,
-  narrative,
   getDatetimeX,
   getY,
   getCategoryColor,
@@ -83,19 +82,9 @@ const TimelineEvents = ({
   transitionDuration,
   dims,
   features,
-  setLoading,
-  setNotLoading,
   eventRadius,
 }) => {
-  const narIds = narrative ? narrative.steps.map((s) => s.id) : [];
-
   function renderEvent(event, idx) {
-    if (narrative) {
-      if (!narIds.includes(event.id)) {
-        return null;
-      }
-    }
-
     const isDot = (!!event.location && !!event.longitude) || (features.GRAPH_NONLOCATED && event.projectOffset !== -1);
     let renderShape = isDot ? renderDot : renderBar;
 

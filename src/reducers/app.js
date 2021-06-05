@@ -8,8 +8,6 @@ import {
   TOGGLE_FILTER,
   UPDATE_TIMERANGE,
   UPDATE_DIMENSIONS,
-  UPDATE_NARRATIVE,
-  UPDATE_NARRATIVE_STEP_IDX,
   UPDATE_SOURCE,
   TOGGLE_LANGUAGE,
   TOGGLE_SITES,
@@ -35,78 +33,6 @@ function updateSelected(appState, action) {
   return Object.assign({}, appState, {
     selected: action.selected,
   });
-}
-
-function updateNarrative(appState, action) {
-  let minTime = appState.timeline.range[0];
-  let maxTime = appState.timeline.range[1];
-
-  const cornerBound0 = [180, 180];
-  const cornerBound1 = [-180, -180];
-
-  // Compute narrative time range and map bounds
-  if (action.narrative) {
-    // Forced to comment out min and max time changes, not sure why?
-    minTime = appState.timeline.rangeLimits[0];
-    maxTime = appState.timeline.rangeLimits[1];
-
-    // Find max and mins coordinates of narrative events
-    action.narrative.steps.forEach((step) => {
-      const stepTime = step.datetime;
-      if (stepTime < minTime) minTime = stepTime;
-      if (stepTime > maxTime) maxTime = stepTime;
-
-      if (!!step.longitude && !!step.latitude) {
-        if (+step.longitude < cornerBound0[1]) cornerBound0[1] = +step.longitude;
-        if (+step.longitude > cornerBound1[1]) cornerBound1[1] = +step.longitude;
-        if (+step.latitude < cornerBound0[0]) cornerBound0[0] = +step.latitude;
-        if (+step.latitude > cornerBound1[0]) cornerBound1[0] = +step.latitude;
-      }
-    });
-    // Adjust bounds to center around first event, while keeping visible all others
-    // Takes first event, finds max ditance with first attempt bounds, and use this max distance
-    // on the other side, both in latitude and longitude
-    const first = action.narrative.steps[0];
-    if (!!first.longitude && !!first.latitude) {
-      const firstToLong0 = Math.abs(+first.longitude - cornerBound0[1]);
-      const firstToLong1 = Math.abs(+first.longitude - cornerBound1[1]);
-      const firstToLat0 = Math.abs(+first.latitude - cornerBound0[0]);
-      const firstToLat1 = Math.abs(+first.latitude - cornerBound1[0]);
-
-      if (firstToLong0 > firstToLong1) cornerBound1[1] = +first.longitude + firstToLong0;
-      if (firstToLong0 < firstToLong1) cornerBound0[1] = +first.longitude - firstToLong1;
-      if (firstToLat0 > firstToLat1) cornerBound1[0] = +first.latitude + firstToLat0;
-      if (firstToLat0 < firstToLat1) cornerBound0[0] = +first.latitude - firstToLat1;
-    }
-
-    // Add some buffer on both sides of the time extent
-    minTime = minTime - Math.abs((maxTime - minTime) / 10);
-    maxTime = maxTime + Math.abs((maxTime - minTime) / 10);
-  }
-  return {
-    ...appState,
-    associations: {
-      ...appState.associations,
-      narrative: action.narrative,
-    },
-    map: {
-      ...appState.map,
-      bounds: action.narrative ? [cornerBound0, cornerBound1] : null,
-    },
-    timeline: {
-      ...appState.timeline,
-      range: [minTime, maxTime],
-    },
-  };
-}
-
-function updateNarrativeStepIdx(appState, action) {
-  return {
-    ...appState,
-    narrativeState: {
-      current: action.idx,
-    },
-  };
 }
 
 function toggleFilter(appState, action) {
@@ -240,10 +166,6 @@ function app(appState = initial.app, action) {
       return updateTimeRange(appState, action);
     case UPDATE_DIMENSIONS:
       return updateDimensions(appState, action);
-    case UPDATE_NARRATIVE:
-      return updateNarrative(appState, action);
-    case UPDATE_NARRATIVE_STEP_IDX:
-      return updateNarrativeStepIdx(appState, action);
     case UPDATE_SOURCE:
       return updateSource(appState, action);
     /* toggles */

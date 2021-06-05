@@ -119,8 +119,6 @@
           "placeholder": "Search"
         }
       },
-      "narratives_label": "Narratives",
-      "narrative_summary": "Follow a path through the data, from one key event to the next.",
       "categories": "Categories",
       "filters": "Filters",
       "filters_label": "Filters",
