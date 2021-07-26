@@ -24,7 +24,7 @@ const getVideos = (videos) => {
 const getImages = (imgs) => {
   if (imgs && imgs.length) {
     return imgs.map((fileName, i) => {
-      return <img key={fileName} className="img" width="550" src={`./imgs/${fileName}.jpg`} />;
+      return <img key={fileName} className="img" width="550" src={`./videos/imgs/${fileName}.jpg`} />;
     });
   }
 };
