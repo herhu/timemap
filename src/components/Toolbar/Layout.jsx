@@ -88,17 +88,22 @@ class Toolbar extends Component {
         <h3 className="resaltar">REPRESIÓN Y MUERTE EN LAS CALLES DE COLOMBIA</h3>
 
         <p className="highlight">
-          Al menos <span className="contador">{conteoMuertos + 1}</span> personas han muerto en los últimos{' '}
+          En 100 días de choques con la Policía al menos <span className="contador">{conteoMuertos + 1}</span> personas
+          murieron en el contexto de las protestas contra el Gobierno de Iván Duque, desde el 28 de abril del 2021.
+          Estos son los puntos con el registro audiovisual que ciudadanos compartieron en redes sociales y que
+          Cerosetenta ha analizado, verificado y geolocalizado para entender mejor cómo ocurrió cada caso de agresión
+          por parte de la Fuerza Pública, incluyendo los nombres de las víctimas y la descripción de los hechos.
+          {/* Al menos <span className="contador">{conteoMuertos + 1}</span> personas han muerto en los últimos{' '}
           <span className="contador">{dias}</span> días en choques con la policía durante las protestas contra el
           gobierno de Iván Duque. Estos son los puntos y los videos que ayudan a entender cómo ocurrieron sus muertes.
           Además, seleccionamos algunas secuencias que demuestran el desborde de la represión y la violencia policial en
-          medio del paro nacional de Colombia.
+          medio del paro nacional de Colombia. */}
         </p>
 
         <p>
-          Este mapa de violencia policial se hizo con material tomado de fuentes abiertas que nuestro equipo ha podido
+          {/* Este mapa de violencia policial se hizo con material tomado de fuentes abiertas que nuestro equipo ha podido
           verificar y geolocalizar con análisis y reportería en terreno. Este mapa se actualizará con cada nuevo caso
-          que podamos verificar.{' '}
+          que podamos verificar.{' '} */}
           <a href="https://cerosetenta.uniandes.edu.co/represion-y-muerte-mapa/" target="_blank">
             Así se hizo este trabajo.
           </a>
@@ -112,7 +117,7 @@ class Toolbar extends Component {
             Bellingcat
           </a>{' '}
           -{' '}
-          <a href="https://github.com/enflujo" target="_blank">
+          <a href="https://enflujo.com" target="_blank">
             EnFlujo
           </a>
         </p>
