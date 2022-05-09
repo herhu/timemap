@@ -1,13 +1,13 @@
-const root = process.env.NODE_ENV === 'production' ? 'https://cuba-map.pmsconsulting.cl/api' : 'http://localhost:4040';
+const root = process.env.NODE_ENV === 'production' ? 'https://mapa.proyectoinventario.org/api/' : 'http://localhost:4040';
 
 module.exports = {
   display_title: 'CARTOGRAFÍA DE LA VIOLENCIA POLICIAL',
   SERVER_ROOT: root,
-  CAIS_EXT: '/api/v1/gvp/cais/rows',
-  EVENTS_EXT: '/api/v1/gvp/eventos/deeprows',
-  STATIC_EXT: '/api/v1/gvp/menus/columns',
-  VICTIMAS_EXT: '/api/v1/gvp/victimas/rows',
-  FILTER_TREE_EXT: '/api/v1/gvp/menus/columns',
+  CAIS_EXT: 'v1/gvp/cais/rows',
+  EVENTS_EXT: 'v1/gvp/eventos/deeprows',
+  STATIC_EXT: 'v1/gvp/menus/columns',
+  VICTIMAS_EXT: 'v1/gvp/victimas/rows',
+  FILTER_TREE_EXT: 'v1/gvp/menus/columns',
   SITES_EXT: '',
   SHAPES_EXT: '',
   DATE_FMT: 'DD/MM/YYYY',
