@@ -12,7 +12,7 @@ module.exports = {
   SHAPES_EXT: '',
   DATE_FMT: 'DD/MM/YYYY',
   TIME_FMT: 'hh:mm',
-  MAPBOX_TOKEN: 'pk.eyJ1IjoiaGVybmFucG1zIiwiYSI6ImNrenBzcmFxYjA0MGoyeWxqazl1dmxkMXUifQ.KsGfa9dfEHn8hoSfq7NlyA',
+  MAPBOX_TOKEN: 'pk.eyJ1IjoicHJveWVjdG9pbnZlbnRhcmlvIiwiYSI6ImNsMnlzeHJrYjAzZGYzYm11OTQ2Y2F5MHEifQ.0iE067b9PqUZj7cBbE9T_g',
   store: {
     app: {
       language: 'es-MX',

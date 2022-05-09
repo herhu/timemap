@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkviolencia_policial=self.webpackChunkviolencia_policial||[]).push([[623],{3894:function(n,t){function i(n){return function(t){var i=t.dispatch,e=t.getState;return function(t){return function(u){return"function"==typeof u?u(i,e,n):t(u)}}}}var e=i();e.withExtraArgument=i,t.Z=e}}]);

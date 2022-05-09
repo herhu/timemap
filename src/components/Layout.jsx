@@ -31,7 +31,7 @@ class Layout extends Component {
       historias: {
         estanDisparando: {
           mapa: {
-            styleUrl: 'mapbox://styles/hernanpms/ckzr72ngh000914ns5ju4p6w1',
+            styleUrl: 'npm',
             anchor: [-74.057, 4.619],
             startZoom: 11,
             minZoom: 6,
@@ -45,7 +45,7 @@ class Layout extends Component {
         },
         segunda: {
           mapa: {
-            styleUrl: 'mapbox://styles/hernanpms/ckzr72ngh000914ns5ju4p6w1?optimize=true',
+            styleUrl: 'mapbox://styles/proyectoinventario/cl2z4gaqa000w15mgu4ryyz2j',
             anchor: [-77.477, 1.012],
             startZoom: 5,
             minZoom: 6,
