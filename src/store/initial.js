@@ -46,7 +46,7 @@ const initial = {
     isMobile: /Mobi/.test(navigator.userAgent),
     language: 'es-MX',
     map: {
-      anchor: [4.6445491, -74.0686627],
+      anchor: [19.6275294, -73.9190004],
       startZoom: 11,
       minZoom: 6,
       maxZoom: 18,
@@ -67,7 +67,7 @@ const initial = {
         width_controls: 80,
       },
       // El formato es new Date(YYYY, M, D). ¡El Mes (M) va de 0 a 11, siempre le restamos 1 al mes como lo conocemos (ej: Enero es 0, Junio es 5, etc.)!
-      range: [new Date(2021, 3, 4), new Date(2021, 7, 1)],
+      range: [new Date(2022, 0, 1), new Date(2022, 11, 30)],
       // rangeLimits: [new Date(1, 1, 1, 1), new Date()],
       zoomLevels: [
         { label: '20 años', duration: 10512000 },
@@ -115,7 +115,7 @@ const initial = {
         Muerto: '#ff2134',
         Contexto: '#fff697',
         'Otras agresiones': '#F2B035',
-        //'Otras agresiones': '#774ba3',
+        'Pruebas': '#88888',
         'Conducta sospechosa policía': '#86f7f2',
         'Policía disparando arma de fuego': '#78548a',
       },
