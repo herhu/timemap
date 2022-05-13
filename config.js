@@ -1,4 +1,4 @@
-const root = process.env.NODE_ENV === 'production' ? 'https://mapa.proyectoinventario.org/api/' : 'http://localhost:4040';
+const root = process.env.NODE_ENV === 'production' ? 'https://mapa.proyectoinventario.org/api/' : 'http://localhost:4040/';
 
 module.exports = {
   display_title: 'CARTOGRAFÍA DE LA VIOLENCIA POLICIAL',

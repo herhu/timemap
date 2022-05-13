@@ -63,7 +63,6 @@ class Layout extends Component {
 
   componentDidMount() {
     const promise = this.props.actions.fetchDomain();
-
     if (promise) {
       promise.then((domain) =>
         this.props.actions.updateDomain({
@@ -76,15 +75,18 @@ class Layout extends Component {
 
   componentDidUpdate() {
     if (!this.state.muertos.length && this.props.domain && this.props.domain.events.length) {
+
       const muertos = this.props.domain.events
         .filter((event) => {
           return event.category === 'Muerto';
         })
         .map((event) => event.nombre_victima);
+      if (muertos.length > 0) {
+        this.setState({
+          muertos: muertos,
+        });
+      }
 
-      this.setState({
-        muertos: muertos,
-      });
     }
   }
 

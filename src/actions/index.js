@@ -109,7 +109,13 @@ export function fetchDomain() {
 
     return Promise.all([eventPromise, caisPromise, staticPromise, victimasPromise])
       .then((response) => {
-        const eventos = response[0].filter((evento) => +evento.date.split('/')[2] === 2021);
+        const eventos = response[0].filter((evento) =>{
+          console.log('events per year ', evento.date.split('/')[2])
+
+          return +evento.date.split('/')[2] === 2022
+        });
+
+        console.log('eventos', eventos)
 
         const result = {
           // eventos: response[0],
