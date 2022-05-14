@@ -112,7 +112,7 @@ export function fetchDomain() {
         const eventos = response[0].filter((evento) =>{
           console.log('events per year ', evento.date.split('/')[2])
 
-          return +evento.date.split('/')[2] === 2022
+          return +evento.date.split('/')[2] === 2022 && 2021
         });
 
         console.log('eventos', eventos)
