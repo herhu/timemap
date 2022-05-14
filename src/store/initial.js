@@ -67,7 +67,7 @@ const initial = {
         width_controls: 80,
       },
       // El formato es new Date(YYYY, M, D). ¡El Mes (M) va de 0 a 11, siempre le restamos 1 al mes como lo conocemos (ej: Enero es 0, Junio es 5, etc.)!
-      range: [new Date(2021, 0, 1), new Date(2022, 11, 1)],
+      range: [new Date(2021, 6, 1), new Date(2021, 6, 31)],
       // rangeLimits: [new Date(1, 1, 1, 1), new Date()],
       zoomLevels: [
         { label: '20 años', duration: 10512000 },
@@ -118,6 +118,7 @@ const initial = {
         //'Otras agresiones': '#774ba3',
         'Conducta sospechosa policía': '#86f7f2',
         'Policía disparando arma de fuego': '#78548a',
+        'CHILE': '#f9ce46'
       },
       shapes: {
         default: {
